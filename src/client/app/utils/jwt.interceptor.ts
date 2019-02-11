@@ -15,7 +15,6 @@
             console.log(response.headers);
             if (response.headers['x-access-token']) {
                 const token = response.headers['x-access-token'];
-                console.log("GOT HEADER FOR RESPONSE, "+token)
                 localStorage.setItem('jwt', token);
             }
             return response;
