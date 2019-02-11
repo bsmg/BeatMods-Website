@@ -14,14 +14,14 @@ export default class DefaultHeader extends React.Component<
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile={true} />
         <AppNavbarBrand
-          full={{ src: "", width: 89, height: 25, alt: "CoreUI Logo" }}
-          minimized={{ src: "", width: 30, height: 30, alt: "CoreUI Logo" }}
+          full={{ src: "", width: 89, height: 25, alt: "Logo" }}
+          minimized={{ src: "", width: 30, height: 30, alt: "Logo" }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
         <Nav className="d-md-down-none" navbar={true}>
           <NavItem className="px-3">
-            <NavLink href="/">Dashboard</NavLink>
+            <NavLink href="/">Homepage</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink onClick={this.props.onLogout}>Logout</NavLink>

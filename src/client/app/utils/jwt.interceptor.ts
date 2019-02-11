@@ -12,7 +12,6 @@
         }, (error) => Promise.reject(error));
 
         axios.interceptors.response.use((response) => {
-            console.log(response.headers);
             if (response.headers['x-access-token']) {
                 const token = response.headers['x-access-token'];
                 localStorage.setItem('jwt', token);

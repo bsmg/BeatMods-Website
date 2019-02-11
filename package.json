@@ -65,6 +65,7 @@
     "redis": "^2.8.0",
     "resolve": "1.6.0",
     "sass-loader": "^6.0.7",
+    "simple-line-icons": "^2.4.1",
     "style-loader": "^0.20.3",
     "ts-loader": "^2.3.7",
     "tslint": "^5.7.0",
