@@ -19,7 +19,7 @@ const router = express.Router();
 router.use(authSessionManager.injectAuthUser());
 
 router.post("/signIn", authSessionManager.signIn());
-router.get("/signOut", authSessionManager.signOff());
+router.post("/signOut", authSessionManager.signOff());
 router.post("/register", authSessionManager.register());
 router.use(checkAuthorization());
 router.use("/user", userRouter);

@@ -23,6 +23,9 @@ export default class DefaultHeader extends React.Component<
           <NavItem className="px-3">
             <NavLink href="/">Dashboard</NavLink>
           </NavItem>
+          <NavItem className="px-3">
+            <NavLink onClick={this.props.onLogout}>Logout</NavLink>
+          </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar={true} />
       </React.Fragment>

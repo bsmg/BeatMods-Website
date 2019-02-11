@@ -17,7 +17,7 @@ import {
 import navigation from "../../_nav";
 // routes config
 import routes from "../../routes";
-
+import axios from "axios";
 const DefaultFooter = React.lazy(() => import("./footer"));
 const DefaultHeader = React.lazy(() => import("./header"));
 
@@ -26,9 +26,15 @@ class DefaultLayout extends React.Component<{ history: any }, {}> {
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   );
 
-  signOut(e) {
+  async signOut(e) {
     e.preventDefault();
-    this.props.history.push("/login");
+    const {status} = await axios({
+      method: "post",
+      url: "/api/v1/signOut"
+    });
+    if (status == 200) {
+      this.props.history.push("/login");
+    }
   }
 
   render() {
