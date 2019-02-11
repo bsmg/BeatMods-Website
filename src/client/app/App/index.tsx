@@ -12,11 +12,11 @@ const DefaultLayout = Loadable({
 });
 
 const Login = Loadable({
-  loader: () => import('../views/Pages/Login'),
+  loader: () => import('../views/pages/Login'),
   loading
 });
 const Register = Loadable({
-  loader: () => import('../views/Pages/Register'),
+  loader: () => import('../views/pages/Register'),
   loading
 });
 
