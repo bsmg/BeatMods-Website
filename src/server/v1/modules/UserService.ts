@@ -51,20 +51,20 @@ export default class UserService {
     this.dao.update(_id, { passwordHash });
   }
 
-  public async createUser(password: string) {
-    const _admin = await this.dao.find({ email: 'dev@vanzeben.ca' });
-    if (_admin) {
-      return null;
+  public async create(username: string, email: string, password: string) {
+    const _user = await this.dao.find({ email });
+    if (_user) {
+      throw new ServerError('server.duplicate_email', [], 400);
     }
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const admin = {
-      name: 'Administrator',
-      email: 'dev@vanzeben.ca',
+    const user = {
+      username,
+      email,
       lastLogin: null,
       passwordHash
     };
-    const _id = await this.dao.insert(admin);
-    return { _id, ...admin } as User;
+    const _id = await this.dao.insert(user);
+    return { _id, ...user } as User;
   }
 }

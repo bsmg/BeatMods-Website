@@ -1,5 +1,5 @@
 import { Db } from 'mongodb';
-import * as uuid from 'uuid/v4';
+import uuid from 'uuid/v4';
 import * as jwt from 'jsonwebtoken';
 
 import RefreshTokenDAO from './dao/RefreshTokenDAO';

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./App.scss";
 import Loadable from "react-loadable";
 
@@ -10,14 +10,27 @@ const DefaultLayout = Loadable({
   loader: () => import("../layouts/default"),
   loading
 });
+
+const Login = Loadable({
+  loader: () => import('../views/Pages/Login'),
+  loading
+});
+const Register = Loadable({
+  loader: () => import('../views/Pages/Register'),
+  loading
+});
+
+
 export default class App extends React.Component {
   render() {
     return (
-      <HashRouter>
+      <BrowserRouter>
         <Switch>
+          <Route exact path="/register" name="Register Page" component={Register} />
+          <Route exact path="/login" name="Login Page" component={Login} />
           <Route path="/" name="Home" component={DefaultLayout} />
         </Switch>
-      </HashRouter>
+      </BrowserRouter>
     );
   }
 }

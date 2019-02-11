@@ -11,13 +11,15 @@
   "private": true,
   "scripts": {
     "start": "webpack -p --progress --profile --colors && babel-node src/entry.ts --extensions \".ts\"",
-    "start:dev": "nodemon --nolazy --inspect-brk=9889 --watch src/ --exec 'babel-node src/app.ts --extensions \".ts\"'"
+    "debug": "babel-node src/app.ts --extensions \".ts\""
   },
   "engines": {
     "node": ">=6"
   },
   "dependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.0.0-beta.42",
+    "@babel/node": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/plugin-proposal-json-strings": "^7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.2",

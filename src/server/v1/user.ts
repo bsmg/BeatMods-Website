@@ -15,11 +15,25 @@ router.post(
   })
 );
 
-router.get(
+router.post(
   '/create',
   catchErrors(async (req, res, next) => {
     const userService = new UserService(req.ctx);
-    const user = await userService.createUser(req.query.password);
+    
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!username || typeof username !== 'string') {
+      throw new ParameterError('username');
+    }
+    if (!email || typeof email !== 'string') {
+      throw new ParameterError('email');
+    }
+    if (!password || typeof password !== 'string') {
+      throw new ParameterError('password');
+    }
+
+    const user = await userService.create(username,email, password);
     return res.send(user);
   })
 );

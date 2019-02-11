@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { compareSync } from 'bcrypt';
 
-import { ServerError } from '../types/error';
+import { ServerError, ParameterError } from '../types/error';
 import AuthTokenService, { TokenInfo } from './AuthTokenService';
 import UserDAO, { IRedactedDbUser } from './dao/UserDAO';
 import { IDbUser } from './dao/UserDAO';
+import UserService from '../v1/modules/UserService';
 
 declare global {
   export interface ISessionUser
-    extends Pick<IRedactedDbUser, 'name' | 'email' | 'lastLogin'> {
+    extends Pick<IRedactedDbUser, 'username' | 'email' | 'lastLogin'> {
     _id: string;
   }
 }
@@ -77,6 +78,37 @@ export default class AuthSessionManager {
     }.bind(this);
   }
 
+  public register() {
+    return async function(
+      this: AuthSessionManager,
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) {
+      try {
+        const userService = new UserService(req.ctx);
+        
+        const username = req.body.username;
+        const email = req.body.email;
+        const password = req.body.password;
+        if (!username || typeof username !== 'string') {
+          throw new ParameterError('username');
+        }
+        if (!email || typeof email !== 'string') {
+          throw new ParameterError('email');
+        }
+        if (!password || typeof password !== 'string') {
+          throw new ParameterError('password');
+        }
+
+        const user = await userService.create(username, email, password);
+        return res.send(user);
+      } catch (ex) {
+        return res.send(ex);
+      }
+    }.bind(this);
+  }
+
   public signIn() {
     return async function(
       this: AuthSessionManager,
@@ -88,8 +120,11 @@ export default class AuthSessionManager {
         const db = req.ctx.db;
         const userDao = new UserDAO(db);
         const user = await userDao.getWithPassword({
-          email: req.body.username
+          ...("username" in req.body ? {username: req.body.username}: null),
+          ...("email" in req.body ? {email: req.body.email}: null),
+
         });
+
         if (!user || !compareSync(req.body.password, user.passwordHash)) {
           return next(new SignInError());
         }
@@ -144,7 +179,7 @@ export default class AuthSessionManager {
     const claims: ISessionUser = {
       _id: user._id.toHexString(),
       email: user.email,
-      name: user.name,
+      username: user.username,
       lastLogin: user.lastLogin
     };
     return claims;

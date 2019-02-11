@@ -17,7 +17,6 @@ import {
 import navigation from "../../_nav";
 // routes config
 import routes from "../../routes";
-import axios from "axios";
 
 const DefaultFooter = React.lazy(() => import("./footer"));
 const DefaultHeader = React.lazy(() => import("./header"));
@@ -32,13 +31,6 @@ class DefaultLayout extends React.Component<{ history: any }, {}> {
     this.props.history.push("/login");
   }
 
-  async componentDidMount() {
-    const data = await axios({
-      method: "get",
-      url: "/api/v1/test"
-    });
-    console.log(data);
-  }
   render() {
     return (
       <div className="app">

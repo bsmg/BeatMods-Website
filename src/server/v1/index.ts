@@ -15,12 +15,12 @@ const authSessionManager = new AuthSessionManager({
   authService: authTokenService
 });
 const router = express.Router();
+
 router.use(authSessionManager.injectAuthUser());
-router.get("/test", (req, res) => {
-  res.send({ valid: true });
-});
+
 router.post("/signIn", authSessionManager.signIn());
 router.get("/signOut", authSessionManager.signOff());
+router.post("/register", authSessionManager.register());
 router.use(checkAuthorization());
 router.use("/user", userRouter);
 
