@@ -19,7 +19,6 @@ router.post(
   '/create',
   catchErrors(async (req, res, next) => {
     const userService = new UserService(req.ctx);
-    
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
@@ -33,7 +32,7 @@ router.post(
       throw new ParameterError('password');
     }
 
-    const user = await userService.create(username,email, password);
+    const user = await userService.create(username, email, password);
     return res.send(user);
   })
 );

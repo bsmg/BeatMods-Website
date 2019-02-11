@@ -87,7 +87,7 @@ export default class AuthSessionManager {
     ) {
       try {
         const userService = new UserService(req.ctx);
-        
+
         const username = req.body.username;
         const email = req.body.email;
         const password = req.body.password;
@@ -120,8 +120,8 @@ export default class AuthSessionManager {
         const db = req.ctx.db;
         const userDao = new UserDAO(db);
         const user = await userDao.getWithPassword({
-          ...("username" in req.body ? {username: req.body.username}: null),
-          ...("email" in req.body ? {email: req.body.email}: null),
+          ...("username" in req.body ? {username: req.body.username} : null),
+          ...("email" in req.body ? {email: req.body.email} : null),
 
         });
 

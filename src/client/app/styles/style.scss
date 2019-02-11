@@ -9,3 +9,10 @@
 
 // ie fixes
 @import "ie-fix";
+
+
+img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}

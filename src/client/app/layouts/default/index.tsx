@@ -24,15 +24,15 @@ const DefaultHeader = React.lazy(() => import("./header"));
 class DefaultLayout extends React.Component<{ history: any }, {}> {
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
-  );
+  )
 
   async signOut(e) {
     e.preventDefault();
-    const {status} = await axios({
+    const { status } = await axios({
       method: "post",
       url: "/api/v1/signOut"
     });
-    if (status == 200) {
+    if (status === 200) {
       this.props.history.push("/login");
     }
   }

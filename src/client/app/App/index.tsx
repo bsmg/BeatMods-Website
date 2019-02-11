@@ -12,18 +12,15 @@ const DefaultLayout = Loadable({
 });
 
 const Login = Loadable({
-  loader: () => import('../views/pages/Login'),
+  loader: () => import("../views/pages/Login"),
   loading
 });
 const Register = Loadable({
-  loader: () => import('../views/pages/Register'),
+  loader: () => import("../views/pages/Register"),
   loading
 });
 
-
 export default class App extends React.Component<{}, {}> {
-
- 
   render() {
     return (
       <BrowserRouter>
@@ -35,25 +32,29 @@ export default class App extends React.Component<{}, {}> {
   }
 }
 
-class RoutedComponents extends React.Component<{history?: any}, {}> {
+class RoutedComponents extends React.Component<{ history?: any }, {}> {
   async componentDidMount() {
     try {
-      const {data, status} = await axios({
+      await axios({
         method: "get",
         url: "/api/v1/user/current"
       });
-      if (status == 200 && "_id" in data) {
-        this.props.history.push("/");
-      } 
     } catch (e) {
-        this.props.history.push("/login");
+      this.props.history.push("/login");
     }
   }
   render() {
-    return (<Switch>
-      <Route exact path="/register" name="Register Page" component={Register} />,
-      <Route exact path="/login" name="Login Page" component={Login} />,
-      <Route path="/" name="Home" component={DefaultLayout} />
-    </Switch>);
+    return (
+      <Switch>
+        <Route
+          exact={true}
+          path="/register"
+          name="Register Page"
+          component={Register}
+        />
+        <Route exact={true} path="/login" name="Login Page" component={Login} />
+        <Route path="/" name="Home" component={DefaultLayout} />
+      </Switch>
+    );
   }
 }

@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 const app = express.Router();
 
 // app.use(express.static(path.join(__dirname, "../../", "build", "static")));
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(initContext("beatsaver"));

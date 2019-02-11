@@ -1,7 +1,7 @@
-import DefaultLayout from './layouts/default';
+import SongList from "./views/song/list";
 
 const routes = [
-  { path: '/', exact: true, name: 'Home', component: DefaultLayout }
+  { path: "/song", exact: true, name: "Songs", component: SongList }
 ];
 
 export default routes;

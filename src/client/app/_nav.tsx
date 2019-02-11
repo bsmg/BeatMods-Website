@@ -1,12 +1,11 @@
 export default {
   items: [
     {
-      name: "Dashboard",
-      url: "/dashboard",
+      name: "Songs",
+      url: "/song",
       icon: "icon-speedometer",
       badge: {
         variant: "info",
-        text: "NEW"
       }
     }
   ]
