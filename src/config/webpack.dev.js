@@ -6,11 +6,11 @@ module.exports = merge(commonConfig, {
     devtool: 'eval-source-map',
     mode: 'development',
     entry: {
-        'app': ['webpack-hot-middleware/client&reload=true']
+        'app': ['webpack-hot-middleware/client?reload=true']
     },
     resolve: {
         alias: {
-            'webpack-hot-middleware/client&reload=true': path.join(__dirname, '../../node_modules/webpack-hot-middleware/client')
+            'webpack-hot-middleware/client': path.join(__dirname, '../../node_modules/webpack-hot-middleware/client')
         }
     },
     output: {

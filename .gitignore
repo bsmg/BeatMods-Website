@@ -24,3 +24,6 @@ $RECYCLE.BIN/
 .Trashes
 yarn.lock
 tunnel.sh
+
+uploads/*
+images/*

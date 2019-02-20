@@ -7,6 +7,15 @@ export default {
       badge: {
         variant: "info",
       }
+    },
+    
+    {
+      name: "Upload",
+      url: "/song/upload",
+      icon: "icon-speedometer",
+      badge: {
+        variant: "info",
+      }
     }
   ]
 };

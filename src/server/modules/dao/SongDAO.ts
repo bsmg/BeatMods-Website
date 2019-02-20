@@ -12,11 +12,30 @@ export default class SongDAO extends BaseDAO<ISong>
   }
 
   public async get(_id: Id | string, options?: FindOneOptions) {
-    return await super.get(_id, options);
+    return await (await this.collection.aggregate([{
+      $match: {_id}},
+      {$lookup: {
+        from: "user",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+      }}
+      ,{$unwind: "$user"}
+    ], options)).toArray();
   }
 
   public async list(filter: dynamic = {}, options?: FindOneOptions) {
-    return await super.list(filter, options);
+    return await this.collection.aggregate([{
+      $match: filter
+    },
+      {$lookup: {
+        from: "user",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+      }}
+      ,{$unwind: "$user"}
+    ], options);
   }
 
 }
