@@ -1,7 +1,7 @@
 import { Db, FindOneOptions } from 'mongodb';
 import BaseDAO, { IBaseDAO } from './BaseDAO';
 import { IMod } from 'v1/models';
-import { ServerError } from 'types/error';
+import { ServerError } from '../types/error';
 
 
 export interface IModDAO extends IBaseDAO<IMod> {}
