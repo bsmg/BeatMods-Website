@@ -13,7 +13,6 @@ const isDev = process.env.NODE_ENV !== "production";
 const port = Number(process.env.PORT) || 3000;
 
 const app = express();
-app.use("/images", express.static(path.join(__dirname, "../", "images")));
 app.use("/uploads", express.static(path.join(__dirname, "../", "uploads")));
 app.use("/api", server);
 
@@ -45,12 +44,12 @@ if (isDev) {
   app.use(
     express.static(path.resolve(__dirname, "./client/public/index.html"))
   );
-  }else {
-     app.use(express.static(path.resolve(__dirname, "../dist")));
-     app.get("*", function(req, res) {
-       res.sendFile(path.resolve(__dirname, "../dist/index.html"));
-       res.end();
-     });
+} else {
+  app.use(express.static(path.resolve(__dirname, "../dist/client")));
+  app.get("*", function(req, res) {
+    res.sendFile(path.resolve(__dirname, "../dist/client/index.html"));
+    res.end();
+  });
 }
 
 app.listen(port, err => {

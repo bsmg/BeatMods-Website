@@ -13,7 +13,7 @@ module.exports = {
         ]
     },
     output: {
-        path: helpers.root('dist'),
+        path: helpers.root('dist/client'),
         publicPath: '/'
     },
     resolve: {
