@@ -21,22 +21,24 @@ import axios from "axios";
 const DefaultFooter = React.lazy(() => import("./footer"));
 const DefaultHeader = React.lazy(() => import("./header"));
 
-class DefaultLayout extends React.Component<{ history: any }, {user: any|null}> {
+class DefaultLayout extends React.Component<{ history: hashHistory }, {user: any|null}> {
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   )
   async componentDidMount() {
     try {
-      const {data} = await axios({
+      const { data } = await axios({
         method: "get",
         url: "/api/v1/user/current"
       });
-      this.setState({user: data})
+      this.setState({user: Object.keys(data).length ? data : null})
     } catch (e) {
       this.setState({user: null})
     }
     
-    this.props.history.push("/mods");
+    if (window.location.hash !== "#/mods") {
+      this.props.history.push("/mods");
+    }
   }
 
   async signOut(e) {

@@ -41,7 +41,7 @@ router.get(
   '/current',
   catchErrors(async (req, res, next) => {
     if (!req.ctx.user || !req.ctx.user._id) {
-      return res.send();
+      return res.send({});
     }
 
     const userService = new UserService(req.ctx);

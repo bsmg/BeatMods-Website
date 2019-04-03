@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { HashRouter, Switch, Route } from "react-router-dom";
 import "./App.scss";
 import Loadable from "react-loadable";
 import axios from "axios";
@@ -23,25 +23,16 @@ const Register = Loadable({
 export default class App extends React.Component<{}, {}> {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <Route path="/" name="Home" component={RoutedComponents} />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
 
 class RoutedComponents extends React.Component<{ history?: any }, {}> {
-  async componentDidMount() {
-    try {
-      await axios({
-        method: "get",
-        url: "/api/v1/user/current"
-      });
-    } catch (e) {
-    }
-  }
   render() {
     return (
       <Switch>

@@ -37,7 +37,7 @@ export default class Mod extends Component<
             </div>
                 <div className="mod__details">
                     {mod.dependencies.length > 0 && (<div className="dependencies">Dependencies: <code>{mod.dependencies.map((item, i) => <span key={`dependency-${item._id}`}>{item.name}@{item.version}{i !== mod.dependencies.length - 1 ? ", " : ""}</span>)}</code></div>)}
-                    {mod.description && mod.description.length > 0 && [<span>Description:</span>, <div className="description" dangerouslySetInnerHTML={{__html: mod.description}}/>]}
+                    {mod.description && mod.description.length > 0 && [<span key="description_label">Description:</span>, <div key="description_value" className="description" dangerouslySetInnerHTML={{__html: mod.description}}/>]}
                 </div>
           <div className="actions">
             <div className="actions__section">

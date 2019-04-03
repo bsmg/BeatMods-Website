@@ -24,7 +24,7 @@ export default class DefaultHeader extends React.Component<
             <NavLink onClick={this.props.onLogout}>Logout</NavLink>
           </NavItem>)}
           {!this.props.user && (<NavItem className="px-3">
-            <NavLink href="/login">Login/Register</NavLink>
+            <NavLink href="/#/login">Login/Register</NavLink>
           </NavItem>)}
         </Nav>
       </React.Fragment>
