@@ -1,6 +1,7 @@
 import { Db, FindOneOptions } from 'mongodb';
 import BaseDAO, { IBaseDAO } from './BaseDAO';
 import { IMod } from 'v1/models';
+import { ServerError } from 'types/error';
 
 
 export interface IModDAO extends IBaseDAO<IMod> {}
@@ -15,7 +16,11 @@ export default class ModDAO extends BaseDAO<IMod>
     const d = dependencies.split(",").filter(i => i.length);
     if (!d.length) { return []; }
     const _dependencies = d.map(dependency => ({version: dependency.trim().split("@")[1].trim(), name: dependency.trim().split("@")[0].trim()}));
-    return await (await this.collection.find({$or: _dependencies}).toArray());
+    const foundDependencies =  await (await this.collection.find({$or: _dependencies}).toArray());
+    if (foundDependencies.length !== _dependencies.length) {      
+      throw new ServerError('server.invalid_dependencies', [], 400);
+    }
+    return foundDependencies;
   }
 
   public async get(_id: Id | string, options?: FindOneOptions) {

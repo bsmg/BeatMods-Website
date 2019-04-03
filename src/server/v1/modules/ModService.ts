@@ -57,26 +57,27 @@ export default class ModService {
   }
   
   public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, link: string, file: Express.Multer.File|null) {
-    if (file){
-      var zip = new AdmZip(file.buffer);
-      const mod: IMod = {
-        name,
-        description: description|| "",
-        authorId: toId(user._id),
-        version,
-        link,
-        uploadDate: new Date(),
-        status: "pending",
-        dependencies: (await this.dao.getDependencies(dependencies)).map(m => m._id)
-      };
-      const {_id} = (await this.insert(mod) as IMod & {_id: Id}); 
-      mod._id = toId(_id);  
-      const filename = path.join(process.cwd(), "uploads", _id.toString(), `${name}-${version}.zip`);
-      zip.writeZip(filename);
-      mod.hashMd5 = md5File.sync(filename)
-      await this.update(mod);
-    }
-    return true;
+      if (file){
+        var zip = new AdmZip(file.buffer);
+        const _dependencies = (await this.dao.getDependencies(dependencies));
+        const mod: IMod = {
+          name,
+          description: description|| "",
+          authorId: toId(user._id),
+          version,
+          link,
+          uploadDate: new Date(),
+          status: "pending",
+          dependencies: _dependencies.map(m => m._id)
+        };
+        const {_id} = (await this.insert(mod) as IMod & {_id: Id}); 
+        mod._id = toId(_id);  
+        const filename = path.join(process.cwd(), "uploads", _id.toString(), `${name}-${version}.zip`);
+        zip.writeZip(filename);
+        mod.hashMd5 = md5File.sync(filename)
+        await this.update(mod);
+      }
+      return true;
   }
 
 }
