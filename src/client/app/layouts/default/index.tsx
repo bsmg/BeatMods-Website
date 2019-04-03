@@ -21,10 +21,23 @@ import axios from "axios";
 const DefaultFooter = React.lazy(() => import("./footer"));
 const DefaultHeader = React.lazy(() => import("./header"));
 
-class DefaultLayout extends React.Component<{ history: any }, {}> {
+class DefaultLayout extends React.Component<{ history: any }, {user: any|null}> {
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   )
+  async componentDidMount() {
+    try {
+      const {data} = await axios({
+        method: "get",
+        url: "/api/v1/user/current"
+      });
+      this.setState({user: data})
+    } catch (e) {
+      this.setState({user: null})
+    }
+    
+    this.props.history.push("/mods");
+  }
 
   async signOut(e) {
     e.preventDefault();
@@ -42,7 +55,7 @@ class DefaultLayout extends React.Component<{ history: any }, {}> {
       <div className="app">
         <AppHeader fixed={true}>
           <React.Suspense fallback={this.loading()}>
-            <DefaultHeader onLogout={e => this.signOut(e)} />
+            <DefaultHeader onLogout={e => this.signOut(e)} user={this.state && this.state.user ? this.state.user : null}/>
           </React.Suspense>
         </AppHeader>
         <div className="app-body">
@@ -66,7 +79,7 @@ class DefaultLayout extends React.Component<{ history: any }, {}> {
                         key={idx}
                         path={route.path}
                         exact={route.exact}
-                        render={props => <route.component {...props} />}
+                        render={props => <route.component {...props} user={this.state && this.state.user ? this.state.user : null}/>}
                       />
                     ) : null;
                   })}

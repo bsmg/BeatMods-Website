@@ -1,9 +1,9 @@
-import SongList from "./views/song/list";
-import SongUpload from "./views/song/upload";
+import ModList from "./views/mod/list";
+import ModUpload from "./views/mod/upload";
 
 const routes = [
-  { path: "/song", exact: true, name: "Songs", component: SongList },
-  { path: "/song/upload", exact: true, name: "Song Upload", component: SongUpload }
+  { path: "/mods", exact: true, name: "Mods", component: ModList },
+  { path: "/mods/upload", exact: true, name: "Mod Upload", component: ModUpload }
 ];
 
 export default routes;

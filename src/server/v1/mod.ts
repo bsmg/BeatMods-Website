@@ -1,7 +1,7 @@
 import * as express from "express";
 
 import { catchErrors } from "../modules/Utils";
-import SongService from "./modules/SongService";
+import ModService from "./modules/ModService";
 
 import multer from "multer";
 const storage = multer.memoryStorage();
@@ -12,17 +12,17 @@ const router = express.Router();
 router.post(
   "/",
   catchErrors(async (req, res, next) => {
-    const songService = new SongService(req.ctx);
-    const song = await songService.get(req.params.id);
-    return res.send(song);
+    const modService = new ModService(req.ctx);
+    const mod = await modService.get(req.params.id);
+    return res.send(mod);
   })
 );
 
 router.get(
   "/",
   catchErrors(async (req, res, next) => {
-    const songService = new SongService(req.ctx);
-    return res.send(await songService.list(req.query));
+    const modService = new ModService(req.ctx);
+    return res.send(await modService.list(req.query));
   })
 );
 
@@ -31,8 +31,9 @@ router.post(
   upload.single("file"),
   catchErrors(async (req, res, next) => { 
     const file = "file" in req && req.file ? req.file : null;
-    const songService = new SongService(req.ctx);
-    const user = await songService.create(req.ctx.user, file);
+    
+    const modService = new ModService(req.ctx);
+    const user = await modService.create(req.ctx.user, req.body.name ||"", req.body.description ||"", req.body.version ||"", req.body.dependencies ||"", file);
     return res.send(user);
   })
 );
@@ -40,9 +41,9 @@ router.post(
 router.get(
   "/:_id",
   catchErrors(async (req, res, next) => {
-    const songService = new SongService(req.ctx);
-    const song = await songService.get(req.params._id);
-    return res.send(song);
+    const modService = new ModService(req.ctx);
+    const mod = await modService.get(req.params._id);
+    return res.send(mod);
   })
 );
 

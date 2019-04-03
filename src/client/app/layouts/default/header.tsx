@@ -3,9 +3,9 @@ import * as React from "react";
 import { Nav, NavItem, NavLink } from "reactstrap";
 
 import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react";
-
+import logo from "./logo.png";
 export default class DefaultHeader extends React.Component<
-  { onLogout: any },
+  { onLogout: any, user: any | null },
   {}
 > {
   render() {
@@ -14,20 +14,19 @@ export default class DefaultHeader extends React.Component<
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile={true} />
         <AppNavbarBrand
-          full={{ src: "", width: 89, height: 25, alt: "Logo" }}
-          minimized={{ src: "", width: 30, height: 30, alt: "Logo" }}
+          full={{ src: logo, width: 89, height: 25, alt: "Logo" }}
+          minimized={{ src: logo, width: 30, height: 30, alt: "Logo" }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
-        <Nav className="d-md-down-none" navbar={true}>
-          <NavItem className="px-3">
-            <NavLink href="/">Homepage</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
+        <Nav className="d-md-down-none ml-auto" navbar={true}>
+          {this.props.user && (<NavItem className="px-3">
             <NavLink onClick={this.props.onLogout}>Logout</NavLink>
-          </NavItem>
+          </NavItem>)}
+          {!this.props.user && (<NavItem className="px-3">
+            <NavLink href="/login">Login/Register</NavLink>
+          </NavItem>)}
         </Nav>
-        <Nav className="ml-auto" navbar={true} />
       </React.Fragment>
     );
   }

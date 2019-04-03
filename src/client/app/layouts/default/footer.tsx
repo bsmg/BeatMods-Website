@@ -6,9 +6,6 @@ export default class DefaultFooter extends React.Component<{}, {}> {
     return (
       <React.Fragment>
         <span>&copy; 2019</span>
-        <span className="ml-auto">
-          Developed by <a href="https://vanZeben.ca">Ryan van Zeben</a>
-        </span>
       </React.Fragment>
     );
   }

@@ -4,7 +4,6 @@ import modules from "./v1";
 import { ServerError } from "./types/error";
 import { toObject } from "./modules/Utils";
 import cookieParser from 'cookie-parser';
-import path from "path";
 const app = express.Router();
 
 // app.use(express.static(path.join(__dirname, "../../", "build", "static")));

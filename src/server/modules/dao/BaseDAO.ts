@@ -5,7 +5,8 @@ import {
   FindOneOptions,
   ReplaceOneOptions,
   CollectionInsertOneOptions,
-  FindOneAndReplaceOption
+  FindOneAndReplaceOption,
+  AggregationCursor
 } from 'mongodb';
 import { toId } from '../Utils';
 
@@ -18,7 +19,7 @@ export interface IBaseDAO<T extends { _id?: Id }> {
   list(
     filter: dynamic,
     options?: FindOneOptions
-  ): Promise<Cursor<T & { _id: Id }>>;
+  ): Promise<AggregationCursor<T & { _id: Id }>>;
   update(
     _id: Id | string,
     item: dynamic,
@@ -64,7 +65,7 @@ export default class BaseDAO<T extends { _id?: Id }> implements IBaseDAO<T> {
   }
 
   public async list(filter: dynamic, options?: FindOneOptions) {
-    return await this.collection.find(filter, options);
+    return await this.collection.aggregate([{$match: filter}], options);
   }
 
   public async update(

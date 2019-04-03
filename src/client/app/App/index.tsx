@@ -40,7 +40,6 @@ class RoutedComponents extends React.Component<{ history?: any }, {}> {
         url: "/api/v1/user/current"
       });
     } catch (e) {
-      this.props.history.push("/login");
     }
   }
   render() {

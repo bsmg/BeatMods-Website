@@ -2,7 +2,7 @@ import { Db, FindOneOptions } from 'mongodb';
 import BaseDAO, { IBaseDAO } from './BaseDAO';
 
 export interface IRedactedDbUser {
-  _id?: Id;
+  _id: Id;
   username: string;
   email: string;
   lastLogin: Date | null;

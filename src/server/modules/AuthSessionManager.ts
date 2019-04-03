@@ -177,7 +177,7 @@ export default class AuthSessionManager {
       throw new Error();
     }
     const claims: ISessionUser = {
-      _id: user._id.toHexString(),
+      _id: user._id,
       email: user.email,
       username: user.username,
       lastLogin: user.lastLogin

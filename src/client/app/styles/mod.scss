@@ -1,14 +1,15 @@
-.songs {
+.mods {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
-.song__detail__wrapper {
+.mod__wrapper {
     padding: 15px;
     flex-basis: 33%;
 }
-.song__detail {
+.mod {
+    position: relative;
     flex: 1;
     border-radius: 5px;
     border: 1px solid #c8ced3;
@@ -29,7 +30,24 @@
             flex-direction: column; 
         }
     }
-    .title {
+    .badge {
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        line-height: 12px;
+        margin-left: 10px;
+        text-transform: uppercase;
+        &--pending {
+            background-color: #f3c454;
+        }
+        &--approved {
+            background-color: #23d160;
+        }
+        &--denied {
+            background-color: #d12323;
+        }
+    }
+    .name {
         font-size: 20px;
         display: flex; flex-direction: row;
         align-items: center;
@@ -49,10 +67,19 @@
         h3 {
             margin-bottom: 5px;
             font-size: 22px;
+            width: 100%;
         }
         .author {
             font-size: 12px;
             line-height: 12px;
+        }
+        .version {
+            font-size: 12px;
+            line-height: 12px;
+            margin-left: 5px;
+        }
+        .download {
+            cursor: pointer;
         }
     
     }

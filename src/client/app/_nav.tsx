@@ -1,17 +1,16 @@
 export default {
   items: [
     {
-      name: "Songs",
-      url: "/song",
+      name: "Mods",
+      url: "/mods",
       icon: "icon-speedometer",
       badge: {
         variant: "info",
-      }
+      },
     },
-    
     {
       name: "Upload",
-      url: "/song/upload",
+      url: "/mods/upload",
       icon: "icon-speedometer",
       badge: {
         variant: "info",

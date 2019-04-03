@@ -90,8 +90,8 @@ export default class Login extends Component<
                           </Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">
-                            Forgot password?
+                          <Button onClick={() => {this.props.history.push("/mods");}} color="link" className="px-0">
+                            Back to homepage
                           </Button>
                         </Col>
                       </Row>
@@ -106,9 +106,7 @@ export default class Login extends Component<
                     <div>
                       <h2>Sign up</h2>
                       <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore magna aliqua.
+                        Register an account to be able to upload your own mods
                       </p>
                       <Link to="/register">
                         <Button
