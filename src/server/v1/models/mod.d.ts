@@ -12,6 +12,8 @@ export interface IMod {
   dependencies: Id[];
   link: string;
   status: "pending" | "approved" | "declined";
+  curator?: boolean;
+  admin?: boolean;
   hashMd5?: string;
 }
 export type mod = IMod & {_id: Id};

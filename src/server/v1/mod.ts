@@ -46,5 +46,13 @@ router.get(
     return res.send(mod);
   })
 );
+router.post(
+  "/:_id",
+  catchErrors(async (req, res, next) => {
+    const modService = new ModService(req.ctx);
+    const mod = await modService.update({...req.body, _id: req.params._id});
+    return res.send(mod);
+  })
+);
 
 export default router;

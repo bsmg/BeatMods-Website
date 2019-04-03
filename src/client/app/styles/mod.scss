@@ -43,7 +43,7 @@
         &--approved {
             background-color: #23d160;
         }
-        &--denied {
+        &--declined {
             background-color: #d12323;
         }
     }
@@ -88,22 +88,35 @@
     .actions {
         margin-top: auto;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        margin-top: 10px;
         &__section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-basis: 50%;
-            &:last-of-type {
-                margin-left: 20px;
-            }
-        }
-        button {
             width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+
             &:last-of-type {
                 margin-top: 10px;
+            }
+
+            button {
+                flex-basis: 50%;
+                width: 100%;
+                margin: 0 auto;
+                margin-left: 20px;
+
+                &:first-of-type {
+                    margin: 0 auto;
+                }
+                &.approve {
+                    color: #23d160;
+                }
+                &.decline {
+                    color: #d12323;
+                }
             }
         }
     }

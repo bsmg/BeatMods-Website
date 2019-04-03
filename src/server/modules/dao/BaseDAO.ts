@@ -9,6 +9,7 @@ import {
   AggregationCursor
 } from 'mongodb';
 import { toId } from '../Utils';
+import { string } from 'prop-types';
 
 export interface IBaseDAO<T extends { _id?: Id }> {
   insert(item: T, options?: CollectionInsertOneOptions): Promise<Id>;
@@ -60,6 +61,10 @@ export default class BaseDAO<T extends { _id?: Id }> implements IBaseDAO<T> {
     return await this.collection.findOne({ _id: toId(_id) }, options);
   }
 
+  public async remove(_id: _id | string) {
+    return await this.collection.remove(toId(_id));
+  }
+
   public async find(filter: dynamic, options?: FindOneOptions) {
     return await this.collection.findOne(filter, options);
   }
@@ -74,9 +79,11 @@ export default class BaseDAO<T extends { _id?: Id }> implements IBaseDAO<T> {
     options?: ReplaceOneOptions
   ) {
     const _options = Object.assign({ returnNewDocument: true }, options);
+    const updateItem = {...item};
+    delete updateItem['_id'];
     const result = await this.collection.findOneAndUpdate(
       { _id: toId(_id) },
-      { $set: item },
+      { $set: updateItem },
       _options
     );
     return result.value || null;

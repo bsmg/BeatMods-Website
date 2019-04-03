@@ -1,12 +1,23 @@
 import { IMod } from 'src/server/v1/models';
 import React, { Component } from "react";
+import axios from "axios";
 import { Link } from 'react-router-dom';
 import Button from 'reactstrap/lib/Button';
 
 export default class Mod extends Component<
-{ mod: IMod },
+{ mod: IMod, user: any | null, refresh: any },
 {}
 > {
+    
+  async update(mod: dynamic) {
+    await axios({
+      method: "post",
+      url: `/api/v1/mod/${this.props.mod._id}`,
+      data: mod
+    });
+    this.props.refresh();
+  }
+
     render() {
         const {mod} = this.props;
         return (<div className="mod__wrapper">
@@ -31,10 +42,11 @@ export default class Mod extends Component<
           <div className="actions">
             <div className="actions__section">
                 {mod.link && mod.link.length > 0 && (<Button onClick={() => {window.open(`${mod.link}`)}}>External Link</Button>)}
-
+                <Button onClick={() => {window.open(`/uploads/${mod._id}/${mod.name}-${mod.version}.zip`)}}>Download Zip</Button>
             </div>
             <div className="actions__section">
-              <Button onClick={() => {window.open(`/uploads/${mod._id}/${mod.name}-${mod.version}.zip`)}}>Download Zip</Button>
+              {(mod.status !== "approved") && this.props.user && this.props.user.admin && (<Button className="approve" onClick={() => this.update({status: "approved"})}>Approve</Button>)}
+              {mod.status !== "declined" && this.props.user && this.props.user.admin && (<Button className="decline"onClick={() => this.update({status: "declined"})}>Decline</Button>)}
             </div>
 </div>
             </div>

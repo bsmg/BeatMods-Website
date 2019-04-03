@@ -24,6 +24,10 @@ export default class ModService {
     return (await this.dao.get(toId(_id))[0]) as (IMod | null);
   }
 
+  public async remove(_id: string | Id) {
+    return await this.dao.remove(_id);
+  }
+
   private getRegex(param: string) {
     return {
       $regex: `${decodeURIComponent(param).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")}`,
@@ -41,7 +45,11 @@ export default class ModService {
         ;
       }
       if (params.status && params.status.length) {
-        query.status = params.status;
+        if (Array.isArray(params.status)) {
+          query.status = {$in: params.status};
+        } else {
+          query.status = params.status;
+        }
       }
     }
     const cursor = await this.dao.list(Object.keys(query).length ? query : undefined);
