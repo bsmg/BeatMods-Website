@@ -33,7 +33,7 @@ router.post(
     const file = "file" in req && req.file ? req.file : null;
     
     const modService = new ModService(req.ctx);
-    const user = await modService.create(req.ctx.user, req.body.name ||"", req.body.description ||"", req.body.version ||"", req.body.dependencies ||"", file);
+    const user = await modService.create(req.ctx.user, req.body.name ||"", req.body.description ||"", req.body.version ||"", req.body.dependencies ||"", req.body.link || "", file);
     return res.send(user);
   })
 );

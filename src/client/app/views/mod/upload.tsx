@@ -19,7 +19,9 @@ export default class SongUpload extends Component<
   fileUpload: HTMLInputElement | null = null;
   name: HTMLInputElement | null = null;
   version: HTMLInputElement | null = null;
+  description: HTMLInputElement | null = null;
   dependencies: HTMLInputElement | null = null;
+  link: HTMLInputElement | null = null;
   
   async onSubmit() {
     const formData = new FormData();
@@ -31,6 +33,12 @@ export default class SongUpload extends Component<
     }
     if (this && this.version != null && this.version.value) {
       formData.append("version", this.version.value);
+    }
+    if (this && this.description != null && this.description.value) {
+      formData.append("description", this.description.value);
+    }
+    if (this && this.link != null && this.link.value) {
+      formData.append("link", this.link.value);
     }
     if (this && this.dependencies != null && this.dependencies.value) {
       formData.append("dependencies", this.dependencies.value);
@@ -91,6 +99,21 @@ export default class SongUpload extends Component<
                       type="text"
                       placeholder="Dependencies"
                      innerRef={(input) => this.dependencies = input }
+                    />
+                  </InputGroup>
+                  <InputGroup className="mb-3">
+                    <Input
+                      type="textarea"
+                      placeholder="Description"
+                      maxLength={200}
+                      innerRef={(input) => this.description = input }
+                    />
+                  </InputGroup>
+                  <InputGroup className="mb-3">
+                    <Input
+                      type="text"
+                      placeholder="Information Link"
+                      innerRef={(input) => this.link = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">

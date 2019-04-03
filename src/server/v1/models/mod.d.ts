@@ -10,6 +10,7 @@ export interface IMod {
   uploadDate: Date;
   description: string;
   dependencies: Id[];
+  link: string;
   status: "pending" | "approved" | "declined";
   hashMd5?: string;
 }

@@ -58,6 +58,7 @@ export default class ModDAO extends BaseDAO<IMod>
               author: {$first: "$author"},
               status: {$first: "$status"},
               description: {$first: "$description"},
+              link: {$first: "$link"},
               dependencies: {$addToSet: "$dependency"},
               }}
           ],

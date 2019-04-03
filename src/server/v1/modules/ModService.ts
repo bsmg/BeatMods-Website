@@ -56,7 +56,7 @@ export default class ModService {
     return (await this.dao.update(toId(mod._id), mod)) as IMod;
   }
   
-  public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, file: Express.Multer.File|null) {
+  public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, link: string, file: Express.Multer.File|null) {
     if (file){
       var zip = new AdmZip(file.buffer);
       const mod: IMod = {
@@ -64,6 +64,7 @@ export default class ModService {
         description: description|| "",
         authorId: toId(user._id),
         version,
+        link,
         uploadDate: new Date(),
         status: "pending",
         dependencies: (await this.dao.getDependencies(dependencies)).map(m => m._id)
