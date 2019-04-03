@@ -6,12 +6,11 @@ import { ParameterError } from '../types/error';
 
 const router = express.Router();
 
-router.post(
+router.get(
   '/',
   catchErrors(async (req, res, next) => {
     const userService = new UserService(req.ctx);
-    const user = await userService.get(req.params.id);
-    return res.send(user);
+    return res.send(await userService.list());
   })
 );
 
@@ -37,13 +36,6 @@ router.post(
   })
 );
 
-router.get(
-  '/',
-  catchErrors(async (req, res, next) => {
-    const userService = new UserService(req.ctx);
-    return res.send(await userService.list());
-  })
-);
 
 router.get(
   '/current',
@@ -87,5 +79,6 @@ router.get(
     return res.send(user);
   })
 );
+
 
 export default router;

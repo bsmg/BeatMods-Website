@@ -1,10 +1,10 @@
 import * as express from 'express';
-import * as unless from 'express-unless';
+const unless = require('express-unless');
 
 import { ServerError } from '../types/error';
 
 export interface RequestHandler extends express.RequestHandler {
-  unless?: typeof unless;
+  unless: typeof unless;
 }
 
 export class AuthenticationError extends ServerError {
@@ -19,16 +19,12 @@ export class AuthorizationError extends ServerError {
 }
 
 export function checkAuthorization() {
-  const middleware = <RequestHandler> function(req, res, next) {
+  const middleware = function(req, res, next) {
     if (!req.ctx.user) {
       return next(new AuthenticationError());
     }
-    next();
+    return next();
   };
   middleware.unless = unless;
-  return middleware;
+  return middleware as RequestHandler;
 }
-
-export const permissions = {
-  VIEW_PROFILE: true
-};

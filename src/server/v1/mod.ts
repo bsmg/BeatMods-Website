@@ -9,15 +9,6 @@ const upload = multer({ limits: { fileSize: 6 * 1024 * 1024 }, storage });
 
 const router = express.Router();
 
-router.post(
-  "/",
-  catchErrors(async (req, res, next) => {
-    const modService = new ModService(req.ctx);
-    const mod = await modService.get(req.params.id);
-    return res.send(mod);
-  })
-);
-
 router.get(
   "/",
   catchErrors(async (req, res, next) => {
@@ -25,6 +16,7 @@ router.get(
     return res.send(await modService.list(req.query));
   })
 );
+
 
 router.post(
   "/create",
@@ -46,6 +38,7 @@ router.get(
     return res.send(mod);
   })
 );
+
 router.post(
   "/:_id",
   catchErrors(async (req, res, next) => {
