@@ -13,7 +13,7 @@ export default class Mod extends Component<
             <div className="mod">
             <div className="name">
             <h3>{mod.name}<small className="version">v{mod.version}</small><span className={`badge badge--${mod.status}`}>{mod.status}</span></h3>
-            {mod.author && (
+            {/* {mod.author && (
                   <span className="author">
                     Author:{" "}
                     <b>
@@ -22,7 +22,7 @@ export default class Mod extends Component<
                       </Link>
                     </b>
                   </span>
-)}
+)} */}
             </div>
                 <div className="mod__details">
                     {mod.dependencies.length > 0 && (<div className="dependencies">Dependencies: <code>{mod.dependencies.map((item, i) => <span key={`dependency-${item._id}`}>{item.name}@{item.version}{i !== mod.dependencies.length - 1 ? ", " : ""}</span>)}</code></div>)}
