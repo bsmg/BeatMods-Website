@@ -53,7 +53,7 @@ export default class SongUpload extends Component<
     });
     if (result.data == true) {
       setTimeout(() => {
-        this.props.history.push("/mod");
+        this.props.history.push("/mods");
     }, 0);
     }
   }
