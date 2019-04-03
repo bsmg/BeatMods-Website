@@ -3,7 +3,7 @@ export default {
     {
       name: "Mods",
       url: "/mods",
-      icon: "icon-speedometer",
+      icon: "icon-list",
       badge: {
         variant: "info",
       },
@@ -11,7 +11,7 @@ export default {
     {
       name: "Upload",
       url: "/mods/upload",
-      icon: "icon-speedometer",
+      icon: "icon-cloud-upload",
       badge: {
         variant: "info",
       }
