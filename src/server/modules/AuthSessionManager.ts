@@ -9,7 +9,7 @@ import UserService from '../v1/modules/UserService';
 
 declare global {
   export interface ISessionUser
-    extends Pick<IRedactedDbUser, 'username' | 'email' | 'lastLogin'> {
+    extends Pick<IRedactedDbUser, 'username' | 'email' | 'lastLogin' | 'admin'> {
     _id: string;
   }
 }
@@ -180,7 +180,8 @@ export default class AuthSessionManager {
       _id: user._id,
       email: user.email,
       username: user.username,
-      lastLogin: user.lastLogin
+      lastLogin: user.lastLogin,
+      admin: user.admin
     };
     return claims;
   }

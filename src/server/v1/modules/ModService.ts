@@ -38,9 +38,9 @@ export default class ModService {
     let query: any = {};
     if (params && Object.keys(params).length) {
       if (params.search && params.search.length) {
-        query.$or= [{name: this.getRegex(params.search)},
+        query.$or = [{name: this.getRegex(params.search)},
           {description: this.getRegex(params.search)},
-          {author: this.getRegex(params.search)},
+          {"author.username": this.getRegex(params.search)},
           {hashMd5: this.getRegex(params.search)},
           ]
         ;
@@ -54,7 +54,17 @@ export default class ModService {
       }
     }
     const cursor = await this.dao.list(Object.keys(query).length ? query : undefined);
+    
     const mods = await cursor.toArray();
+    if (this.ctx.user && this.ctx.user._id) {
+      const personalCursor = await this.dao.list({"authorId": toId(this.ctx.user._id), "status": {$ne: "approved"}});
+      const personalMods = await personalCursor.toArray() as IMod[];
+      for (const mod of personalMods) {
+        if (mods.filter(m => m._id == mod._id).length === 0) {
+          mods.push(mod);
+        }
+      }
+    }
     return mods.map(mod => mod as IMod);
   }
 

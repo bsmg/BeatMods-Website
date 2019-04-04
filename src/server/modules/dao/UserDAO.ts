@@ -6,6 +6,7 @@ export interface IRedactedDbUser {
   username: string;
   email: string;
   lastLogin: Date | null;
+  admin: boolean;
 }
 
 export interface IDbUser extends IRedactedDbUser {

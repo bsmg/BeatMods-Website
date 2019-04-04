@@ -1,6 +1,6 @@
 import * as express from "express";
 
-import { catchErrors } from "../modules/Utils";
+import { catchErrors, toId } from "../modules/Utils";
 import ModService from "./modules/ModService";
 
 import multer from "multer";

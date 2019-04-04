@@ -69,7 +69,7 @@ export default class Mod extends Component<
         const {mod} = this.props;
         return (<div className="mod__wrapper">
             <div className="mod">
-            {this.props.user && (this.props.user.admin || this.props.user._id == this.props.mod.authorId) && (<span className="edit" onClick={() => this.setState({editing: !this.state.editing})}><i className="fa fa-edit" /></span>)}
+            {mod.status !== "declined" && this.props.user && (this.props.user.admin || this.props.user._id == this.props.mod.authorId) && (<span className="edit" onClick={() => this.setState({editing: !this.state.editing})}><i className="fa fa-edit" /></span>)}
             <div className="name">
             <h3>{mod.name}<small className="version">v{mod.version}</small></h3>
             </div>            
