@@ -41,6 +41,7 @@ export default class ModService {
         query.$or= [{name: this.getRegex(params.search)},
           {description: this.getRegex(params.search)},
           {author: this.getRegex(params.search)},
+          {hashMd5: this.getRegex(params.search)},
           ]
         ;
       }

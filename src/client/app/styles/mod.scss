@@ -7,7 +7,6 @@
 .mod__wrapper {
     padding: 15px;
     flex-basis: 400px;
-    flex-grow: 1;
 }
 .mod {
     position: relative;
@@ -20,6 +19,34 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    &--edit {
+        .input-group {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            & > * {
+                width: 100%;
+            }
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
+    .edit {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background: rgba(200, 200, 200, 1);
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
     .details {
         margin-bottom: 20px;
         display: flex;

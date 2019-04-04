@@ -3,25 +3,72 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import Button from 'reactstrap/lib/Button';
+import Input from 'reactstrap/lib/Input';
+import InputGroup from 'reactstrap/lib/InputGroup';
+import Label from 'reactstrap/lib/Label';
 
 export default class Mod extends Component<
 { mod: IMod, user: any | null, refresh: any },
-{}
+{editing: boolean, update: Partial<IMod>}
 > {
-    
-  async update(mod: dynamic) {
-    await axios({
-      method: "post",
-      url: `/api/v1/mod/${this.props.mod._id}`,
-      data: mod
-    });
-    this.props.refresh();
+  constructor(props) {
+    super(props);
+    this.state = {editing: false,
+    update: {}};
   }
-
+  componentWillReceiveProps(newProps) {
+    if (!this.state || newProps.mod !== this.props.mod) {
+      this.setState({});
+    }
+  }  
+  async update(mod: dynamic, update = false) {
+    if (update && Object.keys(mod).length) {
+      await axios({
+        method: "post",
+        url: `/api/v1/mod/${this.props.mod._id}`,
+        data: mod
+      });
+      this.props.refresh();
+    } else if (!update) {
+      this.setState({update: {...(this.state||{}).update, ...mod}})
+    }
+  }
+  renderEdit() {
+    const {mod} = this.props;
+    
+    return (<div className="mod__wrapper">
+    <div className="mod mod--edit">            
+    {this.props.user && (this.props.user.admin || this.props.user._id == this.props.mod.authorId) && (<span className="edit" onClick={() => this.setState({editing: !this.state.editing}, () => this.update(this.state.update, true))}><i className="fa fa-save" /></span>)}
+    <InputGroup>
+      <Label>Name: </Label>
+      <Input type="text" value={this.state.update.name || mod.name} onChange={e => this.update({name: e.target.value})}/>
+    </InputGroup>
+    <InputGroup>
+      <Label>Version: </Label>
+      <Input type="text" value={this.state.update.version ||mod.version} onChange={e => this.update({version: e.target.value})} />
+    </InputGroup>
+    
+    {mod.dependencies.length > 0 && (<InputGroup>
+      <Label>Dependencies: </Label>
+      <Input type="text" value={this.state.update.dependencies || mod.dependencies.map((item, i) => `${item.name}@${item.version}${i !== mod.dependencies.length-1 ? "," : ""}`)}  onChange={e => this.update({dependencies: e.target.value})}/>
+    </InputGroup>)}
+    {mod.description && mod.description.length > 0 && (<InputGroup>
+    <Label>Description: </Label><Input type="textarea" value={this.state.update.description ||mod.description} onChange={e => this.update({description: e.target.value})} /></InputGroup>)}
+       
+        <InputGroup>
+          <Label>External Link: </Label>
+          <Input type="text" value={this.state.update.link ||mod.link} onChange={e => this.update({link: e.target.value})} />
+        </InputGroup> </div>
+</div>);
+  }
     render() {
+        if (this.state.editing) {
+          return this.renderEdit();
+        }
         const {mod} = this.props;
         return (<div className="mod__wrapper">
             <div className="mod">
+            {this.props.user && (this.props.user.admin || this.props.user._id == this.props.mod.authorId) && (<span className="edit" onClick={() => this.setState({editing: !this.state.editing})}><i className="fa fa-edit" /></span>)}
             <div className="name">
             <h3>{mod.name}<small className="version">v{mod.version}</small><span className={`badge badge--${mod.status}`}>{mod.status}</span></h3>
              {mod.author && (
@@ -45,8 +92,8 @@ export default class Mod extends Component<
                 <Button onClick={() => {window.open(`${mod.download_url}`)}}>Download Zip</Button>
             </div>
             <div className="actions__section">
-              {(mod.status !== "approved") && this.props.user && this.props.user.admin && (<Button className="approve" onClick={() => this.update({status: "approved"})}>Approve</Button>)}
-              {mod.status !== "declined" && this.props.user && this.props.user.admin && (<Button className="decline"onClick={() => this.update({status: "declined"})}>Decline</Button>)}
+              {(mod.status !== "approved") && this.props.user && this.props.user.admin && (<Button className="approve" onClick={() => this.update({status: "approved"}, true)}>Approve</Button>)}
+              {mod.status !== "declined" && this.props.user && this.props.user.admin && (<Button className="decline"onClick={() => this.update({status: "declined"}, true)}>Decline</Button>)}
             </div>
 </div>
             </div>

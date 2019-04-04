@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -14,7 +15,7 @@ import {
 
 export default class SongUpload extends Component<
   { history: any, user: any | null },
-  {disabled: boolean}
+  { error: string | null}
 > {
   fileUpload: HTMLInputElement | null = null;
   name: HTMLInputElement | null = null;
@@ -55,6 +56,8 @@ export default class SongUpload extends Component<
       setTimeout(() => {
         this.props.history.push("/mods");
     }, 0);
+    } else {
+      this.setState({error: result.data});
     }
   }
   render() {
@@ -64,7 +67,7 @@ export default class SongUpload extends Component<
         <Col md="12" lg="12" xl="12">
           <Card className="mx-12">
             <CardBody className="p-12">
-            <h3>You need to register an account before you can upload mods</h3>
+            <Alert color="danger">You need to register an account before you can upload mods</Alert>
             </CardBody></Card></Col></Row></Container>);
     }
     return (
@@ -127,6 +130,7 @@ export default class SongUpload extends Component<
                     Upload
                   </Button>
                 </Form>
+                {this.state && this.state.error && (<Alert color="danger">{this.state.error}</Alert>)}
               </CardBody>
             </Card>
           </Col>

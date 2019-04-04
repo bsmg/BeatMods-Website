@@ -11,7 +11,7 @@
             "protocol": "inspector",
             "outputCapture": "std",
             "sourceMaps": true,
-            "runtimeExecutable": "yarn",
+            "runtimeExecutable": "npm",
             "runtimeArgs": ["debug"],
             "cwd": "${workspaceRoot}"
         }
