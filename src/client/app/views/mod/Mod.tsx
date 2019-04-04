@@ -75,9 +75,7 @@ export default class Mod extends Component<
                   <span className="author">
                     Author:{" "}
                     <b>
-                      <Link to={`/users/${mod.author._id}`}>
-                        {mod.author.username}
-                      </Link>
+                      {mod.author.username}
                     </b>
                   </span>
 )} 
