@@ -20,7 +20,7 @@ export default class DefaultHeader extends React.Component<
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
-        <Nav className="d-md-down-none ml-auto" navbar={true}>
+        <Nav className="ml-auto" navbar={true}>
           {this.props.user && (<NavItem className="px-3">
             <NavLink onClick={this.props.onLogout}>Logout</NavLink>
           </NavItem>)}

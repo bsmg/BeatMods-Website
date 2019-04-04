@@ -99,8 +99,7 @@ export default class Login extends Component<
                   </CardBody>
                 </Card>
                 <Card
-                  className="text-white bg-primary py-5 d-md-down-none"
-                  style={{ width: "44%" }}
+                  className="text-white bg-primary p-4"
                 >
                   <CardBody className="text-center">
                     <div>
