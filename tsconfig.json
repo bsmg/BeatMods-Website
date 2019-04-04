@@ -21,5 +21,5 @@
         "noUnusedLocals": true,
         "skipLibCheck": true
     },
-    "exclude": ["babel.config.js", "postcss.config.js", "webpack.config.js", "node_modules", "build", "src/server/**/*"]
+    "exclude": ["dist", "babel.config.js", "postcss.config.js", "webpack.config.js", "node_modules", "build", "src/server/**/*"]
 }
