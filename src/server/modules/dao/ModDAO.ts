@@ -79,7 +79,8 @@ export default class ModDAO extends BaseDAO<IMod>
           "data": { "$concatArrays": ["$dependencies", "$nonDependent"] }
         }},
         { "$unwind": "$data" },
-        { "$replaceRoot": { "newRoot": "$data" } }
+        { "$replaceRoot": { "newRoot": "$data" } },
+        {$sort: {name: 1, updatedDate: -1}}
       ], options);
   }
 
