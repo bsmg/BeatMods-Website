@@ -76,6 +76,7 @@
     "redis": "^2.8.0",
     "resolve": "1.6.0",
     "rimraf": "^2.6.3",
+    "sanitize-html": "^1.20.0",
     "sass-loader": "^6.0.7",
     "sha1-file": "^1.0.4",
     "simple-line-icons": "^2.4.1",

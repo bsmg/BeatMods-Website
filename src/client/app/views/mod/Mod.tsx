@@ -7,7 +7,7 @@ import Input from 'reactstrap/lib/Input';
 import InputGroup from 'reactstrap/lib/InputGroup';
 import Label from 'reactstrap/lib/Label';
 import moment from "moment";
-
+var sanitizeHtml = require('sanitize-html');
 export default class Mod extends Component<
 { mod: IMod, user: any | null, refresh: any },
 {editing: boolean, update: Partial<IMod>}
@@ -76,7 +76,7 @@ export default class Mod extends Component<
                 <h4>{mod.author !== undefined && (<span>By&nbsp;<b>{mod.author.username}</b></span>)} &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}<span className={`badge badge--${mod.status}`}>{mod.status}</span></h4>
                 <div className="mod__details">
                     {mod.dependencies.length > 0 && (<div className="dependencies">Dependencies: <code>{mod.dependencies.map((item, i) => <span key={`dependency-${item._id}`}>{item.name}@{item.version}{i !== mod.dependencies.length - 1 ? ", " : ""}</span>)}</code></div>)}
-                    {mod.description && mod.description.length > 0 && [<span key="description_label">Description:</span>, <div key="description_value" className="description" dangerouslySetInnerHTML={{__html: mod.description}}/>]}
+                    {mod.description && mod.description.length > 0 && [<span key="description_label">Description:</span>, <div key="description_value" className="description" dangerouslySetInnerHTML={{__html: sanitizeHtml(mod.description)}}/>]}
                 </div>
           <div className="actions">
             <div className="actions__section">
