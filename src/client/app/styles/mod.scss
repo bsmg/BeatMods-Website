@@ -35,7 +35,9 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+    }
 
+    &--edit {
         .input-group {
             margin-bottom: 10px;
             display: flex;
@@ -154,7 +156,7 @@
                 margin: 0 auto;
                 margin-left: 20px;
                 text-transform: capitalize;
-                
+
                 &:first-of-type {
                     margin: 0 auto;
                 }

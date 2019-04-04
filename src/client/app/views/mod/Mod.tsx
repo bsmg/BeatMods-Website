@@ -48,25 +48,22 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                         <Label>Version: </Label>
                         <Input type="text" value={this.state.update.version || mod.version} onChange={e => this.update({ version: e.target.value })} />
                     </InputGroup>
-                    {mod.dependencies.length > 0 && (
-                        <InputGroup>
-                            <Label>Dependencies: </Label>
-                            <Input
-                                type="text"
-                                value={
-                                    this.state.update.dependencies ||
-                                    mod.dependencies.map((item, i) => `${item.name}@${item.version}${i !== mod.dependencies.length - 1 ? "," : ""}`)
-                                }
-                                onChange={e => this.update({ dependencies: e.target.value })}
-                            />
-                        </InputGroup>
-                    )}
-                    {mod.description && mod.description.length > 0 && (
-                        <InputGroup>
-                            <Label>Description: </Label>
-                            <Input type="textarea" value={this.state.update.description || mod.description} onChange={e => this.update({ description: e.target.value })} />
-                        </InputGroup>
-                    )}
+                    <InputGroup>
+                        <Label>Dependencies: </Label>
+                        <Input
+                            type="text"
+                            value={
+                                this.state.update.dependencies ||
+                                mod.dependencies.map((item, i) => `${item.name}@${item.version}${i !== mod.dependencies.length - 1 ? "," : ""}`) ||
+                                ""
+                            }
+                            onChange={e => this.update({ dependencies: e.target.value })}
+                        />
+                    </InputGroup>
+                    <InputGroup>
+                        <Label>Description: </Label>
+                        <Input type="textarea" value={this.state.update.description || mod.description || ""} onChange={e => this.update({ description: e.target.value })} />
+                    </InputGroup>
                     <InputGroup>
                         <Label>More Info Link: </Label>
                         <Input type="text" value={this.state.update.link || mod.link} onChange={e => this.update({ link: e.target.value })} />
