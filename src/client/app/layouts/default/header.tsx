@@ -3,7 +3,7 @@ import * as React from "react";
 import { Nav, NavItem, NavLink } from "reactstrap";
 
 import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react";
-import logo from "./logo.png";
+import logo from "./logo.svg";
 import logoMobile from "./logo--mobile.png";
 export default class DefaultHeader extends React.Component<{ onLogout: any; user: any | null }, {}> {
     render() {
