@@ -3,8 +3,8 @@ import { toId } from "../../modules/Utils";
 import { IDbMod } from "../models";
 import path from "path";
 import AdmZip from "adm-zip";
-import md5File from "md5-file";
 import ModDAO from "../../modules/dao/ModDAO";
+const md5 = require("md5");
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -37,12 +37,10 @@ export default class ModService {
         const query: dynamic = {};
         if (params && Object.keys(params).length) {
             if (params.search && params.search.length) {
-                query.$or = [
-                    { name: this.getRegex(params.search) },
-                    { description: this.getRegex(params.search) },
-                    { "author.username": this.getRegex(params.search) },
-                    { hashMd5: this.getRegex(params.search) }
-                ];
+                query.$or = [{ name: this.getRegex(params.search) }, { description: this.getRegex(params.search) }, { "author.username": this.getRegex(params.search) }];
+            }
+            if (params.hash && params.hash.length) {
+                query["downloads.hashMd5.hash"] = params.hash;
             }
             if (params.status && params.status.length) {
                 if (Array.isArray(params.status)) {
@@ -113,9 +111,15 @@ export default class ModService {
                 const filePath = `/uploads/${_id.toString()}/${type}/${name}-${version}.zip`;
                 const filename = path.join(process.cwd(), filePath);
                 zip.writeZip(filename);
+                const md5Hashes: { hash: string; file: string }[] = [];
+                zip.getEntries().map(entry => {
+                    const hash = md5(entry.getData());
+                    md5Hashes.push({ hash, file: entry.entryName });
+                });
                 if (mod.downloads) {
-                    mod.downloads.push({ type, url: filePath, hashMd5: md5File.sync(filename) });
+                    mod.downloads.push({ type, url: filePath, hashMd5: md5Hashes });
                 }
+
                 index++;
             }
             await this.update(mod);

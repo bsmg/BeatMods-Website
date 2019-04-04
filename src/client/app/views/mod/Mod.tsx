@@ -131,7 +131,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             {mod.downloads &&
                                 mod.downloads.map(download => (
                                     <Button
-                                        key={download.hashMd5}
+                                        key={`${download.type}--${download.url}`}
                                         onClick={() => {
                                             window.open(`${download.url}`);
                                         }}
