@@ -31,19 +31,19 @@ export default class SongUpload extends Component<
     if (this && this.fileUpload != null && this.fileUpload.files) {
       formData.append("file", this.fileUpload.files[0]);
     } else {
-      this.setState({error: "Please upload a file"});
+      this.setState({error: "File Upload is required"});
       return;
     }
     if (this && this.name != null && this.name.value) {
       formData.append("name", this.name.value);
     } else {
-      this.setState({error: "Please set a name"});
+      this.setState({error: "Mod Name is required"});
       return;
     }
     if (this && this.version != null && this.version.value) {
       formData.append("version", this.version.value);
     } else {
-      this.setState({error: "Please set a version"});
+      this.setState({error: "Version is required"});
       return;
     }
     if (this && this.description != null && this.description.value) {
@@ -104,7 +104,8 @@ export default class SongUpload extends Component<
                   <FormText>
                     The formatting of the dependencies is <code>ModName1@0.0.1,Mod With Spaces@1.2.0</code>
                   </FormText>
-                  <hr />
+                  <hr />                
+                  {this.state && this.state.error && (<Alert style={{margin: "20px auto"}} color="danger">{this.state.error}</Alert>)}
                   <InputGroup className="mb-3">
                     <Label>Mod Name *</Label>
                     <Input
@@ -158,7 +159,6 @@ export default class SongUpload extends Component<
                     Upload
                   </Button>
                 </Form>
-                {this.state && this.state.error && (<Alert color="danger">{this.state.error}</Alert>)}
               </CardBody>
             </Card>
           </Col>
