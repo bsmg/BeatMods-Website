@@ -10,7 +10,9 @@ import {
   Form,
   Input,
   InputGroup,
-  Row
+  Row,
+  FormText,
+  Label
 } from "reactstrap";
 
 export default class SongUpload extends Component<
@@ -28,12 +30,21 @@ export default class SongUpload extends Component<
     const formData = new FormData();
     if (this && this.fileUpload != null && this.fileUpload.files) {
       formData.append("file", this.fileUpload.files[0]);
+    } else {
+      this.setState({error: "Please upload a file"});
+      return;
     }
     if (this && this.name != null && this.name.value) {
       formData.append("name", this.name.value);
+    } else {
+      this.setState({error: "Please set a name"});
+      return;
     }
     if (this && this.version != null && this.version.value) {
       formData.append("version", this.version.value);
+    } else {
+      this.setState({error: "Please set a version"});
+      return;
     }
     if (this && this.description != null && this.description.value) {
       formData.append("description", this.description.value);
@@ -77,49 +88,66 @@ export default class SongUpload extends Component<
             <Card className="mx-4">
               <CardBody className="p-4">
                 <Form
+                  className="upload"
                   onSubmit={e => {
                     e.preventDefault();
                     this.onSubmit();
                   }}
                 >
-                  <h1>Upload Mod</h1>
+                <h1>Upload Mod</h1>
+                  <FormText>
+                    We need some basic data about your mod before we can publish it. Please fill out the inputs below. <b>After you submit your mod, it will need to be reviewed before being approved.</b>
+                  </FormText>
+                  <FormText>
+                    Note that when you add dependencies, they already need to exist on BeatMods. Please include the exact name that is uploaded.
+                  </FormText>
+                  <FormText>
+                    The formatting of the dependencies is <code>ModName1@0.0.1,Mod With Spaces@1.2.0</code>
+                  </FormText>
+                  <hr />
                   <InputGroup className="mb-3">
+                    <Label>Mod Name *</Label>
                     <Input
                       type="text"
-                      placeholder="Mod Name"
+                      placeholder="Some Mod that does things"
                      innerRef={(input) => this.name = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">
+                    <Label>Mod Version *</Label>
                     <Input
                       type="text"
-                      placeholder="Mod Version"
+                      placeholder="0.0.1"
                      innerRef={(input) => this.version = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">
+                    <Label>Dependencies</Label>
                     <Input
                       type="text"
-                      placeholder="Dependencies"
+                      placeholder="SongLoader@6.10.0,Ini Parser@2.5.2"
                      innerRef={(input) => this.dependencies = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">
+                    <Label>Description</Label>
                     <Input
                       type="textarea"
-                      placeholder="Description"
+                      placeholder="200 characters about why your mod is the best mod"
                       maxLength={200}
                       innerRef={(input) => this.description = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">
+                    <Label>More Info Link</Label>
                     <Input
                       type="text"
-                      placeholder="Information Link"
+                      placeholder="http://github.com/"
                       innerRef={(input) => this.link = input }
                     />
                   </InputGroup>
                   <InputGroup className="mb-3">
+                    <Label>File Upload *</Label>
                     <Input
                       type="file"
                       accept=".zip"

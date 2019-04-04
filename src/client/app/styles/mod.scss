@@ -19,20 +19,6 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    &--edit {
-        .input-group {
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            & > * {
-                width: 100%;
-            }
-            &:last-of-type {
-                margin-bottom: 0;
-            }
-        }
-    }
     .edit {
         position: absolute;
         top: -15px;
@@ -145,5 +131,28 @@
                 }
             }
         }
+    }
+}
+
+.upload {
+.form-text {
+    font-size: 100%;
+    margin-bottom: 10px;
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+}
+}
+
+.input-group {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > * {
+        width: 100% !important;
+    }
+    &:last-of-type {
+        margin-bottom: 0;
     }
 }
