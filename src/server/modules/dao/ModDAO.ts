@@ -44,7 +44,7 @@ export default class ModDAO extends BaseDAO<IMod>
       {"$lookup":{
         "from":"user",
         "let":{"authorId": "$authorId"},
-        pipeline: [{$match: {$expr: {$eq: ["$_id", "$$authorId"]}}}, {$project: {_id: 1, username: 1, email: 1, lastLogin: 1}}],
+        pipeline: [{$match: {$expr: {$eq: ["$_id", "$$authorId"]}}}, {$project: {_id: 1, username: 1, lastLogin: 1}}],
         "as":"author"}},
       {"$unwind":"$author"},
       {$facet: {
