@@ -13,7 +13,6 @@ router.get(
   "/",
   catchErrors(async (req, res, next) => {
     const modService = new ModService(req.ctx);
-    console.log(JSON.stringify(req.headers));
     return res.send((await modService.list(req.query)).map(mod => ({...mod, download_url: `${req.protocol}://${req.headers['Host']||req.hostname}/uploads/${mod._id}/${mod.name}-${mod.version}.zip`})));
   })
 );
