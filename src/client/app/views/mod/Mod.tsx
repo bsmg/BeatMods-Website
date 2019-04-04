@@ -131,6 +131,19 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                     </div>
                     <div className="actions">
                         <div className="actions__section">
+                            {mod.downloads &&
+                                mod.downloads.map(download => (
+                                    <Button
+                                        key={download.hashMd5}
+                                        onClick={() => {
+                                            window.open(`${download.url}`);
+                                        }}
+                                    >
+                                        Download {download.type !== "universal" ? download.type + " " : ""}Zip
+                                    </Button>
+                                ))}
+                        </div>
+                        <div className="actions__section">
                             {mod.link && mod.link.length > 0 && (
                                 <Button
                                     onClick={() => {
@@ -140,13 +153,6 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                                     More Info
                                 </Button>
                             )}
-                            <Button
-                                onClick={() => {
-                                    window.open(`${mod.download_url}`);
-                                }}
-                            >
-                                Download Zip
-                            </Button>
                         </div>
                         <div className="actions__section">
                             {mod.status !== "approved" && this.props.user && this.props.user.admin && (

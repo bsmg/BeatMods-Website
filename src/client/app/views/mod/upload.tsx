@@ -4,6 +4,8 @@ import { Alert, Button, Card, CardBody, Col, Container, Form, Input, InputGroup,
 
 export default class SongUpload extends Component<{ history: any; user: any | null }, { error: string | null }> {
     fileUpload: HTMLInputElement | null = null;
+    oculusFileUpload: HTMLInputElement | null = null;
+    steamFileUpload: HTMLInputElement | null = null;
     name: HTMLInputElement | null = null;
     version: HTMLInputElement | null = null;
     description: HTMLInputElement | null = null;
@@ -15,8 +17,19 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
         if (this && this.fileUpload != null && this.fileUpload.files) {
             formData.append("file", this.fileUpload.files[0]);
         } else {
-            this.setState({ error: "File Upload is required" });
-            return;
+            const hasUpload: boolean[] = [];
+            if (this && this.steamFileUpload != null && this.steamFileUpload.files) {
+                formData.append("file", this.steamFileUpload.files[0]);
+                hasUpload.push(true);
+            }
+            if (this && this.oculusFileUpload != null && this.oculusFileUpload.files) {
+                formData.append("file", this.oculusFileUpload.files[0]);
+                hasUpload.push(true);
+            }
+            if (hasUpload.length !== 2) {
+                this.setState({ error: "You need to include both Steam and Oculus File Uploads. Otherwise use the Universal File Upload" });
+                return;
+            }
         }
         if (this && this.name != null && this.name.value) {
             formData.append("name", this.name.value);
@@ -127,8 +140,16 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         <Input type="text" placeholder="http://github.com/" innerRef={input => (this.link = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
-                                        <Label>File Upload *</Label>
+                                        <Label>Universal File Upload</Label>
                                         <Input type="file" accept=".zip" innerRef={input => (this.fileUpload = input)} />
+                                    </InputGroup>
+                                    <InputGroup className="mb-3">
+                                        <Label>Steam-Only File Upload</Label>
+                                        <Input type="file" accept=".zip" innerRef={input => (this.steamFileUpload = input)} />
+                                    </InputGroup>
+                                    <InputGroup className="mb-3">
+                                        <Label>Oculus-Only File Upload</Label>
+                                        <Input type="file" accept=".zip" innerRef={input => (this.oculusFileUpload = input)} />
                                     </InputGroup>
                                     <Button color="success" block={true}>
                                         Upload

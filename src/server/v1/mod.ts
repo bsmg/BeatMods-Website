@@ -13,20 +13,15 @@ router.get(
     "/",
     catchErrors(async (req, res, next) => {
         const modService = new ModService(req.ctx);
-        return res.send(
-            (await modService.list(req.query)).map(mod => ({
-                ...mod,
-                download_url: `${req.protocol}://${req.headers["Host"] || req.hostname}/uploads/${mod._id}/${mod.name}-${mod.version}.zip`
-            }))
-        );
+        return res.send(await modService.list(req.query));
     })
 );
 
 router.post(
     "/create",
-    upload.single("file"),
+    upload.array("file"),
     catchErrors(async (req, res, next) => {
-        const file = "file" in req && req.file ? req.file : null;
+        const files = ("files" in req && req.files ? req.files : []) as Express.Multer.File[];
 
         const modService = new ModService(req.ctx);
         const user = await modService.create(
@@ -36,7 +31,7 @@ router.post(
             req.body.version || "",
             req.body.dependencies || "",
             req.body.link || "",
-            file
+            files
         );
         return res.send(user);
     })

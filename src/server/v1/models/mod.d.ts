@@ -12,7 +12,7 @@ export interface IDbMod {
     dependencies: Id[];
     link: string;
     status: "pending" | "approved" | "declined";
-    hashMd5?: string;
+    downloads?: { type: string; url: string; hashMd5: string }[];
 }
 export type mod = IMod & { _id: Id };
 
@@ -28,6 +28,5 @@ export interface IMod {
     dependencies: IDBMod[];
     link: string;
     status: "pending" | "approved" | "declined";
-    hashMd5: string;
-    download_url: string;
+    downloads?: { type: string; url: string; hashMd5: string }[];
 }

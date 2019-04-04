@@ -149,11 +149,12 @@
             margin-top: 10px;
 
             button {
-                flex-basis: 50%;
+                flex-basis: 100%;
                 width: 100%;
                 margin: 0 auto;
                 margin-left: 20px;
-
+                text-transform: capitalize;
+                
                 &:first-of-type {
                     margin: 0 auto;
                 }

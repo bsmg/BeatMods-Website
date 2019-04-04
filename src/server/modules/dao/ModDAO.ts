@@ -93,6 +93,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     status: { $first: "$status" },
                                     description: { $first: "$description" },
                                     link: { $first: "$link" },
+                                    downloads: { $first: "$downloads" },
                                     dependencies: { $addToSet: "$dependency" }
                                 }
                             }

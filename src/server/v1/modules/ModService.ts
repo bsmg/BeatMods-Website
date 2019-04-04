@@ -85,9 +85,8 @@ export default class ModService {
         return (await this.dao.update(toId(mod._id), mod)) as IDbMod;
     }
 
-    public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, link: string, file: Express.Multer.File | null) {
-        if (file) {
-            const zip = new AdmZip(file.buffer);
+    public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, link: string, files: Express.Multer.File[]) {
+        if (files) {
             const _dependencies = await this.dao.getDependencies(dependencies);
             const mod: IDbMod = {
                 name,
@@ -98,13 +97,23 @@ export default class ModService {
                 updatedDate: new Date(),
                 uploadDate: new Date(),
                 status: "pending",
+                downloads: [],
                 dependencies: _dependencies.map(m => m._id)
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };
             mod._id = toId(_id);
-            const filename = path.join(process.cwd(), "uploads", _id.toString(), `${name}-${version}.zip`);
-            zip.writeZip(filename);
-            mod.hashMd5 = md5File.sync(filename);
+            let index = 0;
+            for (const file of files) {
+                const zip = new AdmZip(file.buffer);
+                const type = files.length === 1 ? "universal" : index === 0 ? "steam" : "oculus";
+                const filePath = `/uploads/${_id.toString()}/${type}/${name}-${version}.zip`;
+                const filename = path.join(process.cwd(), filePath);
+                zip.writeZip(filename);
+                if (mod.downloads) {
+                    mod.downloads.push({ type, url: filePath, hashMd5: md5File.sync(filename) });
+                }
+                index++;
+            }
             await this.update(mod);
         }
         return true;
