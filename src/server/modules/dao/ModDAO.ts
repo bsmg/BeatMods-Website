@@ -80,7 +80,7 @@ export default class ModDAO extends BaseDAO<IMod>
         }},
         { "$unwind": "$data" },
         { "$replaceRoot": { "newRoot": "$data" } },
-        {$sort: {name: 1, updatedDate: -1}}
+        {$sort: {name: 1, version: -1, updatedDate: -1}}
       ], options);
   }
 
