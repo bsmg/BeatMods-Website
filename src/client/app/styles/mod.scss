@@ -64,7 +64,7 @@
         border-radius: 5px;
         font-size: 12px;
         line-height: 12px;
-        margin-left: 10px;
+        margin-left: auto;
         text-transform: uppercase;
         &--pending {
             background-color: #f3c454;
@@ -76,17 +76,17 @@
             background-color: #d12323;
         }
     }
+    h4 {
+        font-size: 12px;
+        line-height: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
     .name {
         font-size: 20px;
         display: flex; flex-direction: row;
         align-items: center;
-        margin-bottom: 20px;
-        img {
-            object-fit: contain;
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-        }
         > span {
             margin-left: 20px;
             display: flex;

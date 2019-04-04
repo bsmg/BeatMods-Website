@@ -6,6 +6,7 @@ import Button from 'reactstrap/lib/Button';
 import Input from 'reactstrap/lib/Input';
 import InputGroup from 'reactstrap/lib/InputGroup';
 import Label from 'reactstrap/lib/Label';
+import moment from "moment";
 
 export default class Mod extends Component<
 { mod: IMod, user: any | null, refresh: any },
@@ -56,7 +57,7 @@ export default class Mod extends Component<
     <Label>Description: </Label><Input type="textarea" value={this.state.update.description ||mod.description} onChange={e => this.update({description: e.target.value})} /></InputGroup>)}
        
         <InputGroup>
-          <Label>External Link: </Label>
+          <Label>More Info Link: </Label>
           <Input type="text" value={this.state.update.link ||mod.link} onChange={e => this.update({link: e.target.value})} />
         </InputGroup> </div>
 </div>);
@@ -70,23 +71,16 @@ export default class Mod extends Component<
             <div className="mod">
             {this.props.user && (this.props.user.admin || this.props.user._id == this.props.mod.authorId) && (<span className="edit" onClick={() => this.setState({editing: !this.state.editing})}><i className="fa fa-edit" /></span>)}
             <div className="name">
-            <h3>{mod.name}<small className="version">v{mod.version}</small><span className={`badge badge--${mod.status}`}>{mod.status}</span></h3>
-             {mod.author && (
-                  <span className="author">
-                    Author:{" "}
-                    <b>
-                      {mod.author.username}
-                    </b>
-                  </span>
-)} 
-            </div>
+            <h3>{mod.name}<small className="version">v{mod.version}</small></h3>
+            </div>            
+                <h4>{mod.author !== undefined && (<span>By&nbsp;<b>{mod.author.username}</b></span>)} &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}<span className={`badge badge--${mod.status}`}>{mod.status}</span></h4>
                 <div className="mod__details">
                     {mod.dependencies.length > 0 && (<div className="dependencies">Dependencies: <code>{mod.dependencies.map((item, i) => <span key={`dependency-${item._id}`}>{item.name}@{item.version}{i !== mod.dependencies.length - 1 ? ", " : ""}</span>)}</code></div>)}
                     {mod.description && mod.description.length > 0 && [<span key="description_label">Description:</span>, <div key="description_value" className="description" dangerouslySetInnerHTML={{__html: mod.description}}/>]}
                 </div>
           <div className="actions">
             <div className="actions__section">
-                {mod.link && mod.link.length > 0 && (<Button onClick={() => {window.open(`${mod.link}`)}}>External Link</Button>)}
+                {mod.link && mod.link.length > 0 && (<Button onClick={() => {window.open(`${mod.link}`)}}>More Info</Button>)}
                 <Button onClick={() => {window.open(`${mod.download_url}`)}}>Download Zip</Button>
             </div>
             <div className="actions__section">

@@ -61,10 +61,12 @@ export default class ModService {
   public async update(mod: IMod) {
     if (!mod._id) {
       throw new ParameterError("mod._id");
-    }
+    }    
+    if (Object.keys(mod).length == 0) { return {}; }
     if (mod.dependencies && typeof mod.dependencies === "string") {
       mod.dependencies = (await this.dao.getDependencies(mod.dependencies));
     }
+    mod.updatedDate = new Date();
     return (await this.dao.update(toId(mod._id), mod)) as IMod;
   }
   
@@ -78,6 +80,7 @@ export default class ModService {
           authorId: toId(user._id),
           version,
           link,
+          updatedDate: new Date(),
           uploadDate: new Date(),
           status: "pending",
           dependencies: _dependencies.map(m => m._id)

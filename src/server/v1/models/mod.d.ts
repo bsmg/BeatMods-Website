@@ -8,6 +8,7 @@ export interface IMod {
   author?: user;
   version: string;
   uploadDate: Date;
+  updatedDate: Date;
   description: string;
   dependencies: Id[];
   link: string;
