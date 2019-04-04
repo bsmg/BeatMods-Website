@@ -62,6 +62,9 @@ export default class ModService {
     if (!mod._id) {
       throw new ParameterError("mod._id");
     }
+    if (mod.dependencies && typeof mod.dependencies === "string") {
+      mod.dependencies = (await this.dao.getDependencies(mod.dependencies));
+    }
     return (await this.dao.update(toId(mod._id), mod)) as IMod;
   }
   
