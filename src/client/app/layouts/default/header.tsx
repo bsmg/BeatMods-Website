@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink } from "reactstrap";
 
 import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react";
 import logo from "./logo.png";
+import logoMobile from "./logo--mobile.png";
 export default class DefaultHeader extends React.Component<
   { onLogout: any, user: any | null },
   {}
@@ -14,8 +15,8 @@ export default class DefaultHeader extends React.Component<
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile={true} />
         <AppNavbarBrand
-          full={{ src: logo, width: 89, height: 25, alt: "Logo" }}
-          minimized={{ src: logo, width: 30, height: 30, alt: "Logo" }}
+          full={{ src: logo, width: 89, height: 25, alt: "BeatMods" }}
+          minimized={{ src: logoMobile, width: 30, height: 30, alt: "BeatMods" }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
