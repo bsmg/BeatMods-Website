@@ -65,7 +65,7 @@ export default class ModDAO extends BaseDAO<IMod>
               version: {$first: "$version"},
               authorId: {$first: "$authorId"},
               uploadDate: {$first: "$uploadDate"},
-              updateDate: {$first: "$updateDate"},
+              updatedDate: {$first: "$updatedDate"},
               author: {$first: "$author"},
               status: {$first: "$status"},
               description: {$first: "$description"},
