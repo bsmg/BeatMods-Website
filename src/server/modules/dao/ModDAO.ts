@@ -2,6 +2,7 @@ import { Db, FindOneOptions } from "mongodb";
 import BaseDAO, { IBaseDAO } from "./BaseDAO";
 import { IDbMod } from "../../v1/models";
 import { ServerError } from "../../../types/error";
+import { toId } from "../../modules/Utils";
 
 export interface IDbModDAO extends IBaseDAO<IDbMod> {}
 
@@ -31,25 +32,69 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
         }
         return foundDependencies;
     }
+    public async getOldVersions(existingMod: IDbMod) {
+        if (!existingMod || !existingMod._id) {
+            return [];
+        }
+        return await (await this.collection.aggregate([
+            {
+                $match: {
+                    name: existingMod.name,
+                    _id: { $ne: toId(existingMod._id) }
+                }
+            },
+            { $project: { _id: 1, name: 1, version: { $split: ["$version", "."] } } },
+            {
+                $match: {
+                    $or: [
+                        {
+                            "version.0": { $lt: existingMod.version.split(".")[0] }
+                        },
+                        { "version.0": { $eq: existingMod.version.split(".")[0] }, "version.1": { $lt: existingMod.version.split(".")[1] } },
+                        {
+                            "version.0": { $eq: existingMod.version.split(".")[0] },
+                            "version.1": { $eq: existingMod.version.split(".")[1] },
+                            "version.2": { $lt: existingMod.version.split(".")[2] }
+                        },
+                        {
+                            "version.0": { $eq: existingMod.version.split(".")[0] },
+                            "version.1": { $eq: existingMod.version.split(".")[1] },
+                            "version.2": { $eq: existingMod.version.split(".")[2] }
+                        },
+                        {
+                            "version.0": { $gt: existingMod.version.split(".")[0] }
+                        },
+                        { "version.0": { $eq: existingMod.version.split(".")[0] }, "version.1": { $gt: existingMod.version.split(".")[1] } },
+                        {
+                            "version.0": { $eq: existingMod.version.split(".")[0] },
+                            "version.1": { $eq: existingMod.version.split(".")[1] },
+                            "version.2": { $gt: existingMod.version.split(".")[2] }
+                        }
+                    ]
+                }
+            },
+            { $project: { _id: 1 } }
+        ])).toArray();
+    }
 
     public async get(_id: Id | string, options?: FindOneOptions) {
-        return await (await this.collection.aggregate(
+        return (await (await this.collection.aggregate(
             [
                 {
-                    $match: { _id }
+                    $match: { _id: toId(_id) }
                 },
                 {
                     $lookup: {
                         from: "user",
-                        localField: "userId",
+                        localField: "authorId",
                         foreignField: "_id",
-                        as: "user"
+                        as: "author"
                     }
                 },
-                { $unwind: "$user" }
+                { $unwind: "$author" }
             ],
             options
-        )).toArray()[0];
+        )).toArray())[0];
     }
 
     public async list(filter: dynamic = {}, options?: FindOneOptions) {

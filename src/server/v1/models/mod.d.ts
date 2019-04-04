@@ -11,7 +11,7 @@ export interface IDbMod {
     description: string;
     dependencies: Id[];
     link: string;
-    status: "pending" | "approved" | "declined";
+    status: IModStatus;
     downloads?: { type: string; url: string; hashMd5: string }[];
 }
 export type mod = IMod & { _id: Id };
@@ -27,6 +27,7 @@ export interface IMod {
     description: string;
     dependencies: IDBMod[];
     link: string;
-    status: "pending" | "approved" | "declined";
+    status: IModStatus;
     downloads?: { type: string; url: string; hashMd5: string }[];
 }
+export type IModStatus = "pending" | "approved" | "declined" | "inactive";

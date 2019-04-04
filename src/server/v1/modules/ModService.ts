@@ -5,7 +5,6 @@ import path from "path";
 import AdmZip from "adm-zip";
 import md5File from "md5-file";
 import ModDAO from "../../modules/dao/ModDAO";
-
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -59,7 +58,7 @@ export default class ModService {
         if (this.ctx.user && this.ctx.user._id) {
             const personalCursor = await this.dao.list({
                 authorId: toId(this.ctx.user._id),
-                status: { $ne: "approved" }
+                status: { $nin: ["approved", "inactive"] }
             });
             const personalMods = await personalCursor.toArray();
             for (const mod of personalMods) {
@@ -80,6 +79,11 @@ export default class ModService {
         }
         if (mod.dependencies && typeof mod.dependencies === "string") {
             mod.dependencies = (await this.dao.getDependencies(mod.dependencies)).map(item => toId(item._id));
+        }
+        const existing = await this.dao.get(toId(mod._id));
+        if (mod.status && mod.status === "approved") {
+            const older = await this.dao.getOldVersions(existing);
+            await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
         }
         mod.updatedDate = new Date();
         return (await this.dao.update(toId(mod._id), mod)) as IDbMod;

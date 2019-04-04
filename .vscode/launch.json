@@ -12,7 +12,7 @@
             "outputCapture": "std",
             "sourceMaps": true,
             "runtimeExecutable": "npm",
-            "runtimeArgs": ["debug"],
+            "runtimeArgs": ["run debug"],
             "cwd": "${workspaceRoot}"
         }
     ]

@@ -16,7 +16,6 @@ const authSessionManager = new AuthSessionManager({
     authService: authTokenService
 });
 const router = express.Router();
-
 router.use(authSessionManager.injectAuthUser());
 
 router.post("/signIn", authSessionManager.signIn());

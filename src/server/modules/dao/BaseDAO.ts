@@ -47,7 +47,9 @@ export default class BaseDAO<T extends { _id?: Id }> implements IBaseDAO<T> {
     }
 
     public async updateMatch(filter: dynamic, item: dynamic, options?: ReplaceOneOptions) {
-        const results = await this.collection.update(filter, { $set: item }, options);
+        const updateItem = { ...item };
+        delete updateItem["_id"];
+        const results = await this.collection.updateMany(filter, { $set: updateItem }, options);
         return results.result.nModified as number;
     }
 
