@@ -2,6 +2,7 @@ import { Db, FindOneOptions } from 'mongodb';
 import BaseDAO, { IBaseDAO } from './BaseDAO';
 import { IMod } from 'v1/models';
 import { ServerError } from '../../types/error';
+import UserDAO from './UserDAO';
 
 
 export interface IModDAO extends IBaseDAO<IMod> {}
@@ -40,8 +41,11 @@ export default class ModDAO extends BaseDAO<IMod>
     return await this.collection.aggregate([{
       $match: filter
     },
-     
-      {"$lookup":{"from":"user","localField":"authorId","foreignField":"_id","as":"author"}},
+      {"$lookup":{
+        "from":"user",
+        "let":{"authorId": "$authorId"},
+        pipeline: [{$match: {$expr: {$eq: ["$_id", "$$authorId"]}}}, {$project: {_id: 1, username: 1, email: 1, lastLogin: 1}}],
+        "as":"author"}},
       {"$unwind":"$author"},
       {$facet: {
           dependencies: [

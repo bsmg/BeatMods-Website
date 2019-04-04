@@ -15,5 +15,6 @@ export interface IMod {
   curator?: boolean;
   admin?: boolean;
   hashMd5?: string;
+  download_url?: string;
 }
 export type mod = IMod & {_id: Id};

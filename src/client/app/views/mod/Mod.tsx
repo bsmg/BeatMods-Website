@@ -42,7 +42,7 @@ export default class Mod extends Component<
           <div className="actions">
             <div className="actions__section">
                 {mod.link && mod.link.length > 0 && (<Button onClick={() => {window.open(`${mod.link}`)}}>External Link</Button>)}
-                <Button onClick={() => {window.open(`/uploads/${mod._id}/${mod.name}-${mod.version}.zip`)}}>Download Zip</Button>
+                <Button onClick={() => {window.open(`${mod.download_url}`)}}>Download Zip</Button>
             </div>
             <div className="actions__section">
               {(mod.status !== "approved") && this.props.user && this.props.user.admin && (<Button className="approve" onClick={() => this.update({status: "approved"})}>Approve</Button>)}
