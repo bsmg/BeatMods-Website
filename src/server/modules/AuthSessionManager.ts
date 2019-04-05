@@ -67,55 +67,47 @@ export default class AuthSessionManager {
 
     public register() {
         return async function(this: AuthSessionManager, req: Request, res: Response, next: NextFunction) {
-            try {
-                const userService = new UserService(req.ctx);
+            const userService = new UserService(req.ctx);
 
-                const username = req.body.username;
-                const email = req.body.email;
-                const password = req.body.password;
-                if (!username || typeof username !== "string") {
-                    throw new ParameterError("username");
-                }
-                if (!email || typeof email !== "string") {
-                    throw new ParameterError("email");
-                }
-                if (!password || typeof password !== "string") {
-                    throw new ParameterError("password");
-                }
-
-                const user = await userService.create(username, email, password);
-                return res.send(user);
-            } catch (ex) {
-                return res.send(ex);
+            const username = req.body.username;
+            const email = req.body.email;
+            const password = req.body.password;
+            if (!username || typeof username !== "string") {
+                throw new ParameterError("username");
             }
+            if (!email || typeof email !== "string") {
+                throw new ParameterError("email");
+            }
+            if (!password || typeof password !== "string") {
+                throw new ParameterError("password");
+            }
+
+            const user = await userService.create(username, email, password);
+            return res.send(user);
         }.bind(this);
     }
 
     public signIn() {
         return async function(this: AuthSessionManager, req: Request, res: Response, next: NextFunction) {
-            try {
-                const db = req.ctx.db;
-                const userDao = new UserDAO(db);
-                const user = await userDao.getWithPassword({
-                    ...("username" in req.body ? { username: req.body.username } : null),
-                    ...("email" in req.body ? { email: req.body.email } : null)
-                });
+            const db = req.ctx.db;
+            const userDao = new UserDAO(db);
+            const user = await userDao.getWithPassword({
+                ...("username" in req.body ? { username: req.body.username } : null),
+                ...("email" in req.body ? { email: req.body.email } : null)
+            });
 
-                if (!user || !compareSync(req.body.password, user.passwordHash)) {
-                    return next(new SignInError());
-                }
-                delete user.passwordHash;
-                user.lastLogin = new Date(); // apply to the object so it gets picked up in the claims
-                await userDao.update(user._id, { lastLogin: user.lastLogin });
-
-                const claims = this.extractClaims(user);
-                const tokenInfo = await this.authService.generateTokens(db, req.ctx.appName, user._id.toHexString(), claims);
-                this.applyAuthSession(req, tokenInfo);
-                this.sendTokensToClient(res, tokenInfo);
-                res.send(user);
-            } catch (ex) {
-                next(ex);
+            if (!user || !compareSync(req.body.password, user.passwordHash)) {
+                throw new SignInError();
             }
+            delete user.passwordHash;
+            user.lastLogin = new Date(); // apply to the object so it gets picked up in the claims
+            await userDao.update(user._id, { lastLogin: user.lastLogin });
+
+            const claims = this.extractClaims(user);
+            const tokenInfo = await this.authService.generateTokens(db, req.ctx.appName, user._id.toHexString(), claims);
+            this.applyAuthSession(req, tokenInfo);
+            this.sendTokensToClient(res, tokenInfo);
+            res.send(user);
         }.bind(this);
     }
 

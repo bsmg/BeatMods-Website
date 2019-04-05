@@ -1,23 +1,28 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+import { Alert, Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 
-export default class Login extends Component<{ history: any }, { username: string; password: string }> {
+export default class Login extends Component<{ history: any }, { username: string; password: string; error: string }> {
     async onSubmit() {
-        const { data, status } = await axios({
-            method: "post",
-            url: "/api/v1/signIn",
-            data: {
-                username: this.state.username,
-                password: this.state.password
+        try {
+            const { data, status } = await axios({
+                method: "post",
+                url: "/api/v1/signIn",
+                data: {
+                    username: this.state.username,
+                    password: this.state.password
+                }
+            });
+
+            if (status === 200 && "_id" in data) {
+                this.props.history.push("/");
             }
-        });
-        if (status !== 200 && "key" in data && "data" in data) {
-            console.error(`${data.httpStatus} Error`, data.key, data.data);
-        }
-        if (status === 200 && "_id" in data) {
-            this.props.history.push("/");
+        } catch ({ response }) {
+            const data = response.data;
+            if ("key" in data && "data" in data) {
+                this.setState({ error: `Error: '${data.key}' ${data.data}` });
+            }
         }
     }
     render() {
@@ -37,6 +42,11 @@ export default class Login extends Component<{ history: any }, { username: strin
                                         >
                                             <h1>Login</h1>
                                             <p className="text-muted">Sign In to your account</p>
+                                            {this.state && this.state.error && (
+                                                <Alert style={{ margin: "20px auto" }} color="danger">
+                                                    {this.state.error}
+                                                </Alert>
+                                            )}
                                             <InputGroup className="mb-3">
                                                 <InputGroupAddon addonType="prepend">
                                                     <InputGroupText>

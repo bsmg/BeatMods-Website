@@ -1,27 +1,31 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Button, Card, CardBody, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+import { Alert, Button, Card, CardBody, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 
-export default class Register extends Component<{ history: any }, { username: string; email: string; password: string; verifyPassword: string }> {
+export default class Register extends Component<{ history: any }, { username: string; email: string; password: string; verifyPassword: string; error: string }> {
     async onSubmit() {
-        if (this.state.password !== this.state.verifyPassword) {
-            console.error("INVALID PASSWORD");
+        if (!this.state || this.state.password !== this.state.verifyPassword) {
+            this.setState({ error: "Passwords do not match" });
             return;
         }
-        const { data, status } = await axios({
-            method: "post",
-            url: "/api/v1/register",
-            data: {
-                username: this.state.username,
-                password: this.state.password,
-                email: this.state.email
+        try {
+            const { data, status } = await axios({
+                method: "post",
+                url: "/api/v1/register",
+                data: {
+                    username: this.state.username,
+                    password: this.state.password,
+                    email: this.state.email
+                }
+            });
+            if (status === 200 && "_id" in data) {
+                this.props.history.push("/login");
             }
-        });
-        if (status !== 200 && "key" in data && "data" in data) {
-            console.error(`${data.httpStatus} Error`, data.key, data.data);
-        }
-        if (status === 200 && "_id" in data) {
-            this.props.history.push("/login");
+        } catch ({ response }) {
+            const data = response.data;
+            if ("key" in data && "data" in data) {
+                this.setState({ error: `Error: '${data.key}' ${data.data}` });
+            }
         }
     }
     render() {
@@ -40,6 +44,11 @@ export default class Register extends Component<{ history: any }, { username: st
                                     >
                                         <h1>Register</h1>
                                         <p className="text-muted">Create your account</p>
+                                        {this.state && this.state.error && (
+                                            <Alert style={{ margin: "20px auto" }} color="danger">
+                                                {this.state.error}
+                                            </Alert>
+                                        )}
                                         <InputGroup className="mb-3">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>

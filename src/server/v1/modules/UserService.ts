@@ -48,9 +48,9 @@ export default class UserService {
     }
 
     public async create(username: string, email: string, password: string) {
-        const _user = await this.dao.find({ email });
+        const _user = await this.dao.find({ $or: [{ email }, { username }] });
         if (_user) {
-            throw new ServerError("server.duplicate_email", [], 400);
+            throw new ServerError("server.duplicate_account", [], 400);
         }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);

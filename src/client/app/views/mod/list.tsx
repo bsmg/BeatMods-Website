@@ -4,27 +4,32 @@ import { IMod } from "src/server/v1/models";
 import queryString from "querystring";
 import { debounce } from "throttle-debounce";
 import Mod from "./Mod";
-import FormGroup from "reactstrap/lib/FormGroup";
-import Label from "reactstrap/lib/Label";
-import Input from "reactstrap/lib/Input";
+import { Alert, FormGroup, Label, Input } from "reactstrap";
 
-export default class ModList extends Component<{ history: any; user: any | null }, { modList: IMod[]; query: { search: string; status: string[] } }> {
+export default class ModList extends Component<{ history: any; user: any | null }, { modList: IMod[]; query: { search: string; status: string[] }; error: string }> {
     constructor(props) {
         super(props);
         this.refresh = this.refresh.bind(this);
         this.refresh = debounce(500, this.refresh);
-        this.state = { modList: [], query: { search: "", status: ["approved"] } };
+        this.state = { error: "", modList: [], query: { search: "", status: ["approved"] } };
     }
     async componentDidMount() {
         this.refresh();
     }
     async refresh() {
-        const { data, status } = await axios({
-            method: "get",
-            url: `/api/v1/mod?${queryString.stringify(this.state.query)}`
-        });
-        if (status === 200) {
-            this.setState({ modList: data as IMod[] });
+        try {
+            const { data, status } = await axios({
+                method: "get",
+                url: `/api/v1/mod?${queryString.stringify(this.state.query)}`
+            });
+            if (status === 200) {
+                this.setState({ modList: data as IMod[] });
+            }
+        } catch ({ response }) {
+            const data = response.data;
+            if ("key" in data && "data" in data) {
+                this.setState({ error: `Error: '${data.key}' ${data.data}` });
+            }
         }
     }
 
@@ -68,6 +73,11 @@ export default class ModList extends Component<{ history: any; user: any | null 
                             </Label>
                         </FormGroup>
                     </div>
+                )}
+                {this.state && this.state.error && (
+                    <Alert style={{ margin: "20px auto" }} color="danger">
+                        {this.state.error}
+                    </Alert>
                 )}
                 <div className="mods">
                     {this.state.modList.map(mod => {

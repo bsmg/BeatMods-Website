@@ -19,12 +19,19 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
     }
     async update(mod: dynamic, update = false) {
         if (update && Object.keys(mod).length) {
-            await axios({
-                method: "post",
-                url: `/api/v1/mod/${this.props.mod._id}`,
-                data: mod
-            });
-            this.props.refresh();
+            try {
+                await axios({
+                    method: "post",
+                    url: `/api/v1/mod/${this.props.mod._id}`,
+                    data: mod
+                });
+                this.props.refresh();
+            } catch ({ response }) {
+                const data = response.data;
+                if ("key" in data && "data" in data) {
+                    alert(`Error: '${data.key}' ${data.data}`);
+                }
+            }
         } else if (!update) {
             this.setState({ update: { ...(this.state || {}).update, ...mod } });
         }

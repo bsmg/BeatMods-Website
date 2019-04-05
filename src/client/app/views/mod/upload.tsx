@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Alert, Button, Card, CardBody, Col, Container, Form, Input, InputGroup, Row, FormText, Label } from "reactstrap";
+import { Link } from "react-router-dom";
 
 export default class SongUpload extends Component<{ history: any; user: any | null }, { error: string | null }> {
     fileUpload: HTMLInputElement | null = null;
@@ -52,20 +53,25 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
         if (this && this.dependencies != null && this.dependencies.value) {
             formData.append("dependencies", this.dependencies.value);
         }
-        const result = await axios({
-            method: "post",
-            url: "/api/v1/mod/create/",
-            data: formData,
-            headers: {
-                "Content-Type": "multipart/form-data"
+        try {
+            const { data } = await axios({
+                method: "post",
+                url: "/api/v1/mod/create/",
+                data: formData,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            if (data === true) {
+                setTimeout(() => {
+                    this.props.history.push("/mods");
+                }, 0);
             }
-        });
-        if (result.data === true) {
-            setTimeout(() => {
-                this.props.history.push("/mods");
-            }, 0);
-        } else {
-            this.setState({ error: result.data });
+        } catch ({ response }) {
+            const data = response.data;
+            if ("key" in data && "data" in data) {
+                this.setState({ error: `Error: '${data.key}' ${data.data}` });
+            }
         }
     }
     render() {
@@ -74,11 +80,9 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                 <Container className="animated fadeIn">
                     <Row className="justify-content-center">
                         <Col md="12" lg="12" xl="12">
-                            <Card className="mx-12">
-                                <CardBody className="p-12">
-                                    <Alert color="danger">You need to register an account before you can upload mods</Alert>
-                                </CardBody>
-                            </Card>
+                            <Alert color="danger">
+                                You need to <Link to="/register">register an account</Link> before you can upload mods
+                            </Alert>
                         </Col>
                     </Row>
                 </Container>
@@ -98,6 +102,14 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                     }}
                                 >
                                     <h1>Upload Mod</h1>
+                                    <FormText>
+                                        Check out the{" "}
+                                        <a href="https://docs.google.com/document/d/15RBVesZdS-U94AvesJ2DJqcnAtgh9E2PZOcbjrQle5Y/" target="_blank">
+                                            Approval Guide
+                                        </a>{" "}
+                                        before you submit a mod.
+                                    </FormText>
+                                    <br />
                                     <FormText>
                                         We need some basic data about your mod before we can publish it. Please fill out the inputs below.{" "}
                                         <b>After you submit your mod, it will need to be reviewed before being approved.</b>
