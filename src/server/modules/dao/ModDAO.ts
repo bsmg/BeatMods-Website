@@ -107,7 +107,10 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                     $lookup: {
                         from: "user",
                         let: { authorId: "$authorId" },
-                        pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$authorId"] } } }, { $project: { _id: 1, username: 1, lastLogin: 1 } }],
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_id", "$$authorId"] } } },
+                            { $project: { _id: 1, username: 1, username_lower: { $toLower: "$username" }, lastLogin: 1 } }
+                        ],
                         as: "author"
                     }
                 },
@@ -142,9 +145,49 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     downloads: { $first: "$downloads" },
                                     dependencies: { $addToSet: "$dependency" }
                                 }
+                            },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    name: 1,
+                                    name_lower: { $toLower: "$name" },
+                                    version: 1,
+                                    authorId: 1,
+                                    uploadDate: 1,
+                                    updatedDate: 1,
+                                    author: 1,
+                                    status: { $toLower: "$status" },
+                                    description: 1,
+                                    link: 1,
+                                    category: { $toLower: "$category" },
+                                    category_lower: { $toLower: "$name" },
+                                    downloads: 1,
+                                    dependencies: 1
+                                }
                             }
                         ],
-                        nonDependent: [{ $match: { "dependencies.0": { $exists: false } } }]
+                        nonDependent: [
+                            { $match: { "dependencies.0": { $exists: false } } },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    name: 1,
+                                    name_lower: { $toLower: "$name" },
+                                    version: 1,
+                                    authorId: 1,
+                                    uploadDate: 1,
+                                    updatedDate: 1,
+                                    author: 1,
+                                    status: { $toLower: "$status" },
+                                    description: 1,
+                                    link: 1,
+                                    category: { $toLower: "$category" },
+                                    category_lower: { $toLower: "$name" },
+                                    downloads: 1,
+                                    dependencies: 1
+                                }
+                            }
+                        ]
                     }
                 },
                 {
@@ -154,7 +197,28 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 },
                 { $unwind: "$data" },
                 { $replaceRoot: { newRoot: "$data" } },
-                { $sort: { ...(options && options.sort ? options.sort : { category: 1, name: 1, updatedDate: -1 }) } }
+                { $sort: { ...(options && options.sort ? options.sort : { category: 1, name: 1, updatedDate: -1 }) } },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        version: 1,
+                        authorId: 1,
+                        uploadDate: 1,
+                        updatedDate: 1,
+                        author: {
+                            _id: "$author._id",
+                            username: "$author.username",
+                            lastLogin: "$author.lastLogin"
+                        },
+                        status: 1,
+                        description: 1,
+                        link: 1,
+                        category: 1,
+                        downloads: 1,
+                        dependencies: 1
+                    }
+                }
             ],
             options
         );

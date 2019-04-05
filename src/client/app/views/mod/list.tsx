@@ -93,10 +93,10 @@ export default class ModList extends Component<
                         <Label>Sort</Label>
                         <FormGroup>
                             <Input type="select" name="select" value={this.state.sort} onChange={e => this.setState({ sort: e.target.value }, this.refresh)}>
-                                <option value="category">Category</option>
-                                <option value="name">Name</option>
-                                <option value="status">Status</option>
-                                <option value="author.username">Author</option>
+                                <option value="category_lower">Category</option>
+                                <option value="name_lower">Name</option>
+                                <option value="status_lower">Status</option>
+                                <option value="author.username_lower">Author</option>
                                 <option value="updatedDate">Last Updated</option>
                             </Input>
                         </FormGroup>
