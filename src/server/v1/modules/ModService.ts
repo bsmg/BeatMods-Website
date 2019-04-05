@@ -188,6 +188,11 @@ export default class ModService {
                 }
                 index++;
             }
+            if (mod.downloads && !mod.downloads.length) {
+                console.error("ModService.create download empty");
+                await this.remove(toId(mod._id));
+                throw new ServerError("mod.upload.zip.unknown");
+            }
             await this.update(mod);
         }
         return true;
