@@ -117,7 +117,7 @@ export default class ModService {
                 uploadDate: new Date(),
                 status: "pending",
                 downloads: [],
-                category,
+                category: category || "Uncategorized",
                 dependencies: _dependencies.map(m => m._id)
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };
