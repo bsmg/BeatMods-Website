@@ -1,10 +1,11 @@
-import { ParameterError } from "../../../types/error";
+import { ParameterError, ServerError } from "../../../types/error";
 import { toId } from "../../modules/Utils";
 import { IDbMod } from "../models";
-import path from "path";
-import AdmZip from "adm-zip";
 import ModDAO from "../../modules/dao/ModDAO";
 const md5 = require("md5");
+import fs from "fs";
+import path from "path";
+const StreamZip = require("node-stream-zip");
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -106,20 +107,68 @@ export default class ModService {
             mod._id = toId(_id);
             let index = 0;
             for (const file of files) {
-                const zip = new AdmZip(file.buffer);
                 const type = files.length === 1 ? "universal" : index === 0 ? "steam" : "oculus";
-                const filePath = `/uploads/${_id.toString()}/${type}/${name}-${version}.zip`;
-                const filename = path.join(process.cwd(), filePath);
-                zip.writeZip(filename);
-                const md5Hashes: { hash: string; file: string }[] = [];
-                zip.getEntries().map(entry => {
-                    const hash = md5(entry.getData());
-                    md5Hashes.push({ hash, file: entry.entryName });
-                });
-                if (mod.downloads) {
-                    mod.downloads.push({ type, url: filePath, hashMd5: md5Hashes });
-                }
+                const filePath = `/uploads/${_id.toString()}/${type}/`;
+                const fileName = `${name}-${version}.zip`;
+                const fullPath = path.join(process.cwd(), filePath);
+                const fullFile = path.join(fullPath, fileName);
+                try {
+                    await new Promise((res, rej) => {
+                        const mkdir = (dirPath: string, root = "") => {
+                            const dirs = dirPath.split("/");
+                            const dir = dirs.shift();
+                            root = (root || "") + dir + "/";
 
+                            try {
+                                fs.mkdirSync(root);
+                            } catch (e) {
+                                if (!fs.statSync(root).isDirectory()) {
+                                    throw new Error(e);
+                                }
+                            }
+
+                            return !dirs.length || mkdir(dirs.join("/"), root);
+                        };
+                        mkdir(fullPath);
+                        fs.writeFile(fullFile, file.buffer, { flag: "w" }, () => {
+                            res();
+                        });
+                    });
+                } catch (err) {
+                    console.error("ModService.create", "ZIP Write", err);
+                    throw new ServerError("mod.upload.zip.create");
+                }
+                try {
+                    const md5Hashes: { hash: string; file: string }[] = [];
+                    await new Promise((res, rej) => {
+                        const zip = new StreamZip({
+                            file: fullFile,
+                            storeEntries: true
+                        });
+                        zip.on("ready", () => {
+                            for (const entry of Object.values(zip.entries()) as any[]) {
+                                if (entry.isDirectory) {
+                                    continue;
+                                }
+                                try {
+                                    const data = zip.entryDataSync(entry);
+                                    const hash = md5(data);
+                                    md5Hashes.push({ hash, file: entry.name });
+                                } catch (error) {
+                                    return rej(entry.name + " -- " + error);
+                                }
+                            }
+                            zip.close();
+                            res();
+                        });
+                    });
+                    if (mod.downloads) {
+                        mod.downloads.push({ type, url: path.join(filePath, fileName), hashMd5: md5Hashes });
+                    }
+                } catch (error) {
+                    console.error("ModService.create zip.read", error);
+                    throw new ServerError("mod.upload.zip.corrupt");
+                }
                 index++;
             }
             await this.update(mod);
