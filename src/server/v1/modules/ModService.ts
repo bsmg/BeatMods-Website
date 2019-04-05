@@ -80,19 +80,29 @@ export default class ModService {
         if (!mod._id) {
             throw new ParameterError("mod._id");
         }
-        if (Object.keys(mod).length === 0) {
-            return {};
+        const updateMod: Partial<IDbMod> = {};
+        const authenticationProps = ["status"];
+        for (const prop in mod) {
+            if (prop in mod) {
+                if (prop in authenticationProps && !(this.ctx.user && this.ctx.user.admin)) {
+                    throw new ParameterError(`mod.auth_required.${prop}`);
+                }
+                updateMod[prop] = mod[prop];
+            }
         }
-        if (mod.dependencies && typeof mod.dependencies === "string") {
-            mod.dependencies = (await this.dao.getDependencies(mod.dependencies)).map(item => toId(item._id));
+        if (Object.keys(updateMod).length === 0) {
+            return new ParameterError(`mod.no_properties_updated`);
+        }
+        updateMod["updatedDate"] = new Date();
+        if (updateMod.dependencies && typeof updateMod.dependencies === "string") {
+            updateMod.dependencies = (await this.dao.getDependencies(updateMod.dependencies)).map(item => toId(item._id));
         }
         const existing = await this.dao.get(toId(mod._id));
-        if (mod.status && mod.status === "approved") {
+        if (updateMod.status && updateMod.status === "approved") {
             const older = await this.dao.getOldVersions(existing);
             await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
         }
-        mod.updatedDate = new Date();
-        return (await this.dao.update(toId(mod._id), mod)) as IDbMod;
+        return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
     }
 
     public async create(
