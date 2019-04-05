@@ -30,6 +30,7 @@ router.post(
             req.body.description || "",
             req.body.version || "",
             req.body.dependencies || "",
+            req.body.category || "",
             req.body.link || "",
             files
         );

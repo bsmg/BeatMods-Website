@@ -56,6 +56,10 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                         <Input type="text" value={this.state.update.version || mod.version} onChange={e => this.update({ version: e.target.value })} />
                     </InputGroup>
                     <InputGroup>
+                        <Label>Category: </Label>
+                        <Input type="text" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })} />
+                    </InputGroup>
+                    <InputGroup>
                         <Label>Dependencies: </Label>
                         <Input
                             type="text"
@@ -105,8 +109,11 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             </span>
                         )}{" "}
                         &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}
-                        <span className={`badge badge--${mod.status}`}>{mod.status}</span>
                     </h4>
+                    <div className="badges">
+                        {mod.category && <span className={`badge badge-info`}>{mod.category}</span>}
+                        <span className={`badge badge--${mod.status}`}>{mod.status}</span>
+                    </div>
                     <div className="mod__details">
                         {mod.dependencies.length > 0 && (
                             <div className="dependencies">

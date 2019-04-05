@@ -1,3 +1,70 @@
+.filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+
+    @media screen and (min-width: 768px) {
+        flex-direction: row;
+    }
+
+    &>div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+
+        &>label {
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .form-group {
+            padding-left: 0;
+            width: 100%;
+        }
+
+        .form-check {
+            width: 100%;
+        }
+
+        &::last-of-type {
+            margin-right: 0;
+        }
+    }
+}
+
+
+.search {
+    margin-left: auto;
+
+    .form-group {
+        position: relative;
+
+        input {
+            width: 50px;
+            transition: width 0.2s ease-in-out;
+            padding-right: 25px;
+            position: relative;
+
+            &:focus {
+                width: 200px;
+            }
+        }
+
+        .fa.fa-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+
+        }
+    }
+
+}
+
 .mods {
     display: flex;
     flex-direction: row;
@@ -195,6 +262,20 @@
 
         &:last-of-type {
             margin-bottom: 0;
+        }
+    }
+}
+
+.badges {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .badge {
+        margin-left: 10px;
+
+        &:first-of-type {
+            margin-left: 0;
         }
     }
 }

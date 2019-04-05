@@ -36,6 +36,7 @@ export default class ModService {
     }
     public async list(params?: any) {
         const query: dynamic = {};
+        let sort: dynamic | undefined;
         if (params && Object.keys(params).length) {
             if (params.search && params.search.length) {
                 query.$or = [{ name: this.getRegex(params.search) }, { description: this.getRegex(params.search) }, { "author.username": this.getRegex(params.search) }];
@@ -43,15 +44,21 @@ export default class ModService {
             if (params.hash && params.hash.length) {
                 query["downloads.hashMd5.hash"] = params.hash;
             }
-            if (params.status && params.status.length) {
-                if (Array.isArray(params.status)) {
-                    query.status = { $in: params.status };
-                } else {
-                    query.status = params.status;
+            const fields = ["category", "status"];
+            for (const field of fields) {
+                if (params[field] && params[field].length) {
+                    if (Array.isArray(params[field])) {
+                        query[field] = { $in: params[field] };
+                    } else {
+                        query[field] = params[field];
+                    }
                 }
             }
+            if (params.sort) {
+                sort = { [params.sort]: Number(params.sortDirection || 1) };
+            }
         }
-        const cursor = await this.dao.list(Object.keys(query).length ? query : undefined);
+        const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
 
         const mods = await cursor.toArray();
         if (this.ctx.user && this.ctx.user._id) {
@@ -88,7 +95,16 @@ export default class ModService {
         return (await this.dao.update(toId(mod._id), mod)) as IDbMod;
     }
 
-    public async create(user: ISessionUser, name: string, description: string, version: string, dependencies: string, link: string, files: Express.Multer.File[]) {
+    public async create(
+        user: ISessionUser,
+        name: string,
+        description: string,
+        version: string,
+        dependencies: string,
+        category: string,
+        link: string,
+        files: Express.Multer.File[]
+    ) {
         if (files) {
             const _dependencies = await this.dao.getDependencies(dependencies);
             const mod: IDbMod = {
@@ -101,6 +117,7 @@ export default class ModService {
                 uploadDate: new Date(),
                 status: "pending",
                 downloads: [],
+                category,
                 dependencies: _dependencies.map(m => m._id)
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };

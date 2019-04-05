@@ -97,7 +97,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
         )).toArray())[0];
     }
 
-    public async list(filter: dynamic = {}, options?: FindOneOptions) {
+    public async list(filter: dynamic = {}, options?: FindOneOptions & { sort?: { [sort: string]: number } }) {
         return await this.collection.aggregate(
             [
                 {
@@ -138,6 +138,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     status: { $first: "$status" },
                                     description: { $first: "$description" },
                                     link: { $first: "$link" },
+                                    category: { $first: "$category" },
                                     downloads: { $first: "$downloads" },
                                     dependencies: { $addToSet: "$dependency" }
                                 }
@@ -153,7 +154,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 },
                 { $unwind: "$data" },
                 { $replaceRoot: { newRoot: "$data" } },
-                { $sort: { name: 1, version: -1, updatedDate: -1 } }
+                { $sort: { ...(options && options.sort ? options.sort : { category: 1, name: 1, updatedDate: -1 }) } }
             ],
             options
         );
