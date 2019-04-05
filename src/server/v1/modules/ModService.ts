@@ -50,7 +50,7 @@ export default class ModService {
                     if (Array.isArray(params[field])) {
                         query[field] = { $in: params[field] };
                     } else {
-                        query[field] = params[field];
+                        query[field] = this.getRegex(params[field]);
                     }
                 }
             }
