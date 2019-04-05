@@ -44,13 +44,13 @@ export default class ModService {
             if (params.hash && params.hash.length) {
                 query["downloads.hashMd5.hash"] = params.hash;
             }
-            const fields = ["category", "status"];
-            for (const field of fields) {
+            const fields = { category: "category", status: "status", name: "name", version: "version", author: "author.username" };
+            for (const field in fields) {
                 if (params[field] && params[field].length) {
                     if (Array.isArray(params[field])) {
-                        query[field] = { $in: params[field] };
+                        query[fields[field]] = { $in: params[field] };
                     } else {
-                        query[field] = this.getRegex(params[field]);
+                        query[fields[field]] = this.getRegex(params[field]);
                     }
                 }
             }
