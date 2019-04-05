@@ -55,10 +55,12 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                         <Label>Version: </Label>
                         <Input type="text" value={this.state.update.version || mod.version} onChange={e => this.update({ version: e.target.value })} />
                     </InputGroup>
-                    <InputGroup>
-                        <Label>Category: </Label>
-                        <Input type="text" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })} />
-                    </InputGroup>
+                    {this.props.user && this.props.user.admin && (
+                        <InputGroup>
+                            <Label>Category: </Label>
+                            <Input type="text" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })} />
+                        </InputGroup>
+                    )}
                     <InputGroup>
                         <Label>Dependencies: </Label>
                         <Input

@@ -1,11 +1,11 @@
 .filters {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: space-evenly;
 
     @media screen and (min-width: 768px) {
         flex-direction: row;
+        align-items: flex-start;
     }
 
     &>div {
@@ -37,19 +37,18 @@
 
 
 .search {
-    margin-left: auto;
 
     .form-group {
         position: relative;
 
         input {
-            width: 50px;
+            width: 100%;
             transition: width 0.2s ease-in-out;
             padding-right: 25px;
             position: relative;
 
             &:focus {
-                width: 200px;
+                width: 100%;
             }
         }
 
@@ -63,6 +62,20 @@
         }
     }
 
+    @media screen and (min-width: 768px) {
+        margin-left: auto;
+
+        .form-group {
+            input {
+                width: 50px;
+
+                &:focus {
+                    width: 200px;
+                }
+            }
+        }
+    }
+
 }
 
 .mods {
@@ -73,8 +86,13 @@
 }
 
 .mod__wrapper {
-    padding: 15px;
-    flex-basis: 400px;
+    padding: 15px 0;
+    flex-basis: 100%;
+
+    @media screen and (min-width: 400px) {
+        padding: 15px;
+        flex-basis: 400px;
+    }
 }
 
 .mod {
