@@ -159,8 +159,8 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     status: { $toLower: "$status" },
                                     description: 1,
                                     link: 1,
-                                    category: { $toLower: "$category" },
-                                    category_lower: { $toLower: "$name" },
+                                    category: 1,
+                                    category_lower: { $toLower: "$category" },
                                     downloads: 1,
                                     dependencies: 1
                                 }
