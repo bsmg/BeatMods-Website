@@ -48,6 +48,9 @@ export default class UserService {
     }
 
     public async create(username: string, email: string, password: string) {
+        if (!new RegExp(/^[\w\- ]+$/).test(username.trim())) {
+            throw new ServerError("server.invalid_username", [], 400);
+        }
         const _user = await this.dao.find({ $or: [{ email }, { username }] });
         if (_user) {
             throw new ServerError("server.duplicate_account", [], 400);
@@ -55,8 +58,8 @@ export default class UserService {
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
         const __user = {
-            username,
-            email,
+            username: username.trim(),
+            email: email.trim(),
             lastLogin: null,
             passwordHash
         };

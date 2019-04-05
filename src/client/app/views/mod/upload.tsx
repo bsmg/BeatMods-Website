@@ -15,15 +15,15 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
 
     async onSubmit() {
         const formData = new FormData();
-        if (this && this.fileUpload != null && this.fileUpload.files) {
+        if (this && this.fileUpload != null && this.fileUpload.files && this.fileUpload.files.length) {
             formData.append("file", this.fileUpload.files[0]);
         } else {
             const hasUpload: boolean[] = [];
-            if (this && this.steamFileUpload != null && this.steamFileUpload.files) {
+            if (this && this.steamFileUpload != null && this.steamFileUpload.files && this.steamFileUpload.files.length) {
                 formData.append("file", this.steamFileUpload.files[0]);
                 hasUpload.push(true);
             }
-            if (this && this.oculusFileUpload != null && this.oculusFileUpload.files) {
+            if (this && this.oculusFileUpload != null && this.oculusFileUpload.files && this.oculusFileUpload.files.length) {
                 formData.append("file", this.oculusFileUpload.files[0]);
                 hasUpload.push(true);
             }
