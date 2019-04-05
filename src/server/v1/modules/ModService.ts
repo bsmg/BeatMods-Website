@@ -142,9 +142,9 @@ export default class ModService {
                 try {
                     await new Promise((res, rej) => {
                         const mkdir = (dirPath: string, root = "") => {
-                            const dirs = dirPath.split("/");
+                            const dirs = dirPath.split(path.sep);
                             const dir = dirs.shift();
-                            root = (root || "") + dir + "/";
+                            root = (root || "") + dir + path.sep;
 
                             try {
                                 fs.mkdirSync(root);
@@ -154,7 +154,7 @@ export default class ModService {
                                 }
                             }
 
-                            return !dirs.length || mkdir(dirs.join("/"), root);
+                            return !dirs.length || mkdir(dirs.join(path.sep), root);
                         };
                         mkdir(fullPath);
                         fs.writeFile(fullFile, file.buffer, { flag: "w" }, () => {
