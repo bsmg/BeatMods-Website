@@ -14,7 +14,7 @@ export default class ModList extends Component<
         super(props);
         this.refresh = this.refresh.bind(this);
         this.refresh = debounce(500, this.refresh);
-        this.state = { error: "", modList: [], query: { search: "", status: ["approved"] }, sort: "category_lower", sortDirection: 1 };
+        this.state = { error: "", modList: [], query: { search: "", status: ["approved"] }, sort: "", sortDirection: 1 };
     }
     async componentDidMount() {
         this.refresh();

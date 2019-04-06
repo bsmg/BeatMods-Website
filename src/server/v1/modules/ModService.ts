@@ -55,7 +55,7 @@ export default class ModService {
                 }
             }
             if (params.sort) {
-                sort = { [params.sort]: Number(params.sortDirection || 1) };
+                sort = { [params.sort]: Number(params.sortDirection || 1), required: 1 };
             }
         }
         const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
@@ -81,7 +81,7 @@ export default class ModService {
             throw new ParameterError("mod._id");
         }
         const updateMod: Partial<IDbMod> = {};
-        const authenticationProps = ["status"];
+        const authenticationProps = ["status", "required"];
         for (const prop in mod) {
             if (prop in mod) {
                 if (prop in authenticationProps && !(this.ctx.user && this.ctx.user.admin)) {
@@ -128,6 +128,7 @@ export default class ModService {
                 status: "pending",
                 downloads: [],
                 category: category || "Uncategorized",
+                required: false,
                 dependencies: _dependencies.map(m => m._id)
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };

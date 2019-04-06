@@ -61,6 +61,16 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             <Input type="text" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })} />
                         </InputGroup>
                     )}
+                    {this.props.user && this.props.user.admin && (
+                        <InputGroup>
+                            <Label>Required: </Label>
+                            <Input
+                                type="checkbox"
+                                checked={"required" in this.state.update ? this.state.update.required : mod.required}
+                                onChange={e => this.update({ required: e.target.checked })}
+                            />
+                        </InputGroup>
+                    )}
                     <InputGroup>
                         <Label>Dependencies: </Label>
                         <Input
@@ -113,8 +123,9 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                         &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}
                     </h4>
                     <div className="badges">
-                        {mod.category && <span className={`badge badge-info`}>{mod.category}</span>}
+                        {mod.category && <span className={`badge badge-secondary`}>{mod.category}</span>}
                         <span className={`badge badge--${mod.status}`}>{mod.status}</span>
+                        {mod.required && <span className={`badge badge-primary`}>Required</span>}
                     </div>
                     <div className="mod__details">
                         {mod.dependencies.length > 0 && (

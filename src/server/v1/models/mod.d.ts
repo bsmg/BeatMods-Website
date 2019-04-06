@@ -13,6 +13,7 @@ export interface IDbMod {
     link: string;
     status: IModStatus;
     category: string;
+    required: boolean;
     downloads?: { type: string; url: string; hashMd5: { hash: string; file: string }[] }[];
 }
 export type mod = IMod & { _id: Id };
@@ -30,6 +31,7 @@ export interface IMod {
     link: string;
     status: IModStatus;
     category: string;
+    required: boolean;
     downloads?: { type: string; url: string; hashMd5: { hash: string; file: string }[] }[];
 }
 export type IModStatus = "pending" | "approved" | "declined" | "inactive";

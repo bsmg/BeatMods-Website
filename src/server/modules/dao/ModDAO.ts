@@ -143,6 +143,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     link: { $first: "$link" },
                                     category: { $first: "$category" },
                                     downloads: { $first: "$downloads" },
+                                    required: { $first: "$required" },
                                     dependencies: { $addToSet: "$dependency" }
                                 }
                             },
@@ -162,6 +163,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     category: 1,
                                     category_lower: { $toLower: "$category" },
                                     downloads: 1,
+                                    required: 1,
                                     dependencies: 1
                                 }
                             }
@@ -184,6 +186,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     category: 1,
                                     category_lower: { $toLower: "$category" },
                                     downloads: 1,
+                                    required: 1,
                                     dependencies: 1
                                 }
                             }
@@ -197,7 +200,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 },
                 { $unwind: "$data" },
                 { $replaceRoot: { newRoot: "$data" } },
-                { $sort: { ...(options && options.sort ? options.sort : { category_lower: 1, name_lower: 1, updatedDate: -1 }) } },
+                { $sort: { ...(options && options.sort ? options.sort : {}), required: -1, category_lower: 1, updatedDate: -1 } },
                 {
                     $project: {
                         _id: 1,
@@ -216,6 +219,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                         link: 1,
                         category: 1,
                         downloads: 1,
+                        required: 1,
                         dependencies: 1
                     }
                 }
