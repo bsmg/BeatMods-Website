@@ -42,11 +42,9 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
         return (
             <div className="mod__wrapper">
                 <div className="mod mod--edit">
-                    {this.props.user && (this.props.user.admin || this.props.user._id === this.props.mod.authorId) && (
-                        <span className="edit" onClick={() => this.setState({ editing: !this.state.editing }, () => this.update(this.state.update, true))}>
-                            <i className="fa fa-save" />
-                        </span>
-                    )}
+                    <span className="edit" onClick={() => this.setState({ editing: !this.state.editing }, () => this.update(this.state.update, true))}>
+                        <i className="fa fa-save" />
+                    </span>
                     <InputGroup>
                         <Label>Name: </Label>
                         <Input type="text" value={this.state.update.name || mod.name} onChange={e => this.update({ name: e.target.value })} />
@@ -103,11 +101,9 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
         return (
             <div className="mod__wrapper">
                 <div className="mod">
-                    {mod.status !== "declined" && this.props.user && (this.props.user.admin || this.props.user._id === this.props.mod.authorId) && (
-                        <span className="edit" onClick={() => this.setState({ editing: !this.state.editing })}>
-                            <i className="fa fa-edit" />
-                        </span>
-                    )}
+                    <span className="edit" onClick={() => this.setState({ editing: !this.state.editing })}>
+                        <i className="fa fa-edit" />
+                    </span>
                     <div className="name">
                         <h3>
                             {mod.name}

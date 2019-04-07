@@ -80,6 +80,11 @@ export default class ModService {
         if (!mod._id) {
             throw new ParameterError("mod._id");
         }
+        const existing = await this.dao.get(toId(mod._id));
+        if (!this.ctx.user || !(this.ctx.user.admin || toId(mod.authorId) === toId(this.ctx.user._id))) {
+            throw new ServerError("mod.no_permissions");
+        }
+
         const updateMod: Partial<IDbMod> = {};
         const authenticationProps = ["status", "required"];
         for (const prop in mod) {
@@ -97,7 +102,6 @@ export default class ModService {
         if (updateMod.dependencies && typeof updateMod.dependencies === "string") {
             updateMod.dependencies = (await this.dao.getDependencies(updateMod.dependencies)).map(item => toId(item._id));
         }
-        const existing = await this.dao.get(toId(mod._id));
         if (updateMod.status && updateMod.status === "approved") {
             const older = await this.dao.getOldVersions(existing);
             await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
