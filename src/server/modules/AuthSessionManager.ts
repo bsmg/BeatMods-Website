@@ -7,6 +7,7 @@ import UserDAO, { IRedactedDbUser } from "./dao/UserDAO";
 import { IDbUser } from "./dao/UserDAO";
 import UserService from "../v1/modules/UserService";
 import { toId } from "./Utils";
+import AuditLogService from "../v1/modules/AuditLogService";
 
 declare global {
     export interface ISessionUser extends Pick<IRedactedDbUser, "username" | "email" | "lastLogin" | "admin"> {
@@ -87,13 +88,19 @@ export default class AuthSessionManager {
         }.bind(this);
     }
 
+    private getRegex(param: string) {
+        return {
+            $regex: `${decodeURIComponent(param).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")}`,
+            $options: "i"
+        };
+    }
     public signIn() {
         return async function(this: AuthSessionManager, req: Request, res: Response, next: NextFunction) {
             const db = req.ctx.db;
             const userDao = new UserDAO(db);
             const user = await userDao.getWithPassword({
-                ...("username" in req.body ? { username: req.body.username } : null),
-                ...("email" in req.body ? { email: req.body.email } : null)
+                ...("username" in req.body ? { username: this.getRegex(req.body.username) } : null),
+                ...("email" in req.body ? { email: this.getRegex(req.body.email) } : null)
             });
 
             if (!user || !compareSync(req.body.password, user.passwordHash)) {
@@ -107,6 +114,8 @@ export default class AuthSessionManager {
             const tokenInfo = await this.authService.generateTokens(db, req.ctx.appName, user._id.toHexString(), claims);
             this.applyAuthSession(req, tokenInfo);
             this.sendTokensToClient(res, tokenInfo);
+            new AuditLogService(req.ctx).create(user as any, "LOGIN", "USER", {}, {});
+
             res.send(user);
         }.bind(this);
     }
@@ -114,6 +123,7 @@ export default class AuthSessionManager {
     public signOff() {
         return async function(this: AuthSessionManager, req: Request, res: Response, next: NextFunction) {
             try {
+                new AuditLogService(req.ctx).create(req.ctx.user, "LOGOUT", "USER", {}, {});
                 const db = req.ctx.db;
                 res.clearCookie(this.refreshCookieName);
                 if (req.ctx.sessionId) {

@@ -6,6 +6,7 @@ const md5 = require("md5");
 import fs from "fs";
 import path from "path";
 const StreamZip = require("node-stream-zip");
+import AuditLogService from "./AuditLogService";
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -17,7 +18,11 @@ export default class ModService {
             return null;
         }
         const _id = await this.dao.insert(mod as any);
+        new AuditLogService(this.ctx).create(this.ctx.user, "INSERT", "MOD", {}, mod);
         return { _id, ...mod } as IDbMod;
+    }
+    public async find(query: dynamic) {
+        return (await this.dao.find(query)[0]) as (IDbMod | null);
     }
 
     public async get(_id: string | Id) {
@@ -106,6 +111,17 @@ export default class ModService {
             const older = await this.dao.getOldVersions(existing);
             await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
         }
+        new AuditLogService(this.ctx).create(
+            this.ctx.user,
+            "UPDATE",
+            "MOD",
+            {
+                ...Object.keys(updateMod)
+                    .map(k => ({ [k]: existing[k] }))
+                    .reduce((acc, cur, i) => ({ ...acc, ...cur }), {})
+            },
+            updateMod
+        );
         return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
     }
 
@@ -119,6 +135,10 @@ export default class ModService {
         link: string,
         files: Express.Multer.File[]
     ) {
+        const existing = await this.find({ name, version });
+        if (existing) {
+            throw new ParameterError("This version already exists");
+        }
         if (files) {
             const _dependencies = await this.dao.getDependencies(dependencies);
             const mod: IDbMod = {
