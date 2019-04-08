@@ -111,6 +111,9 @@ export default class ModService {
             const older = await this.dao.getOldVersions(existing);
             await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
         }
+        if (updateMod["_id"]) {
+            delete updateMod["_id"];
+        }
         new AuditLogService(this.ctx).create(
             this.ctx.user,
             "UPDATE",
