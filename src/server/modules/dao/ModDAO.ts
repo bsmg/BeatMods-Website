@@ -200,10 +200,31 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 },
                 { $unwind: "$data" },
                 { $replaceRoot: { newRoot: "$data" } },
+                {
+                    $group: {
+                        _id: { name: "$name", version: "$version", status: "status" },
+                        id: { $first: "$_id" },
+                        name: { $first: "$name" },
+                        name_lower: { $first: "$name_lower" },
+                        version: { $first: "$version" },
+                        authorId: { $first: "$authorId" },
+                        uploadDate: { $first: "$uploadDate" },
+                        updatedDate: { $first: "$updatedDate" },
+                        author: { $first: "$author" },
+                        status: { $first: "$status" },
+                        description: { $first: "$description" },
+                        link: { $first: "$link" },
+                        category: { $first: "$category" },
+                        category_lower: { $first: "$category_lower" },
+                        downloads: { $first: "$downloads" },
+                        required: { $first: "$required" },
+                        dependencies: { $first: "$dependencies" }
+                    }
+                },
                 { $sort: { ...(options && options.sort ? options.sort : {}), required: -1, category_lower: 1, updatedDate: -1 } },
                 {
                     $project: {
-                        _id: 1,
+                        _id: "$id",
                         name: 1,
                         version: 1,
                         authorId: 1,
