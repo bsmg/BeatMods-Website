@@ -86,7 +86,7 @@ export default class ModService {
             throw new ParameterError("mod._id");
         }
         const existing = await this.dao.get(toId(mod._id));
-        if (!this.ctx.user || !(this.ctx.user.admin || toId(mod.authorId) === toId(this.ctx.user._id))) {
+        if (!this.ctx.user || (!this.ctx.user.admin && toId(mod.authorId).toHexString() !== toId(this.ctx.user._id).toHexString())) {
             throw new ServerError("mod.no_permissions");
         }
 
@@ -140,7 +140,7 @@ export default class ModService {
     ) {
         const existing = await this.find({ name, version });
         if (existing) {
-            throw new ParameterError("This version already exists");
+            throw new ParameterError("mod.duplicate_upload");
         }
         if (files) {
             const _dependencies = await this.dao.getDependencies(dependencies);
