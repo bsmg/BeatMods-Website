@@ -19,7 +19,7 @@ export default class DiscordManager {
             }
             return true;
         } catch (err) {
-            console.error(err.response.status, err.response.data);
+            console.error(err);
         }
         return false;
     }

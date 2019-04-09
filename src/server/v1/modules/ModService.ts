@@ -20,7 +20,13 @@ export default class ModService {
         }
         const _id = await this.dao.insert(mod as any);
         new AuditLogService(this.ctx).create(this.ctx.user, "INSERT", "MOD", {}, mod);
-        new DiscordManager().sendWebhook(`${this.ctx.user.username} uploaded ${mod.name} v${mod.version}`, [], "");
+        new DiscordManager().sendWebhook(
+            `${this.ctx.user.username} uploaded ${mod.name} v${mod.version}`,
+            Object.keys(mod)
+                .filter(i => i === "description")
+                .map(i => ({ name: i, value: mod[i] })) as dynamic[],
+            "https://beatmods.com"
+        );
 
         return { _id, ...mod } as IDbMod;
     }
@@ -130,14 +136,14 @@ export default class ModService {
         );
         if (Object.keys(updateMod).indexOf("status") !== -1 && !isInsert) {
             const newStatus = updateMod.status;
-            new DiscordManager().sendWebhook(`${this.ctx.user.username} ${newStatus} ${existing.name} v${existing.version}`, [], "");
+            new DiscordManager().sendWebhook(`${this.ctx.user.username} ${newStatus} ${existing.name} v${existing.version}`, [], "https://beatmods.com");
         } else if (!isInsert) {
             new DiscordManager().sendWebhook(
                 `${this.ctx.user.username} updated ${existing.name} v${existing.version}`,
                 Object.keys(updateMod)
-                    .filter(i => i !== "updatedDate")
-                    .map(i => ({ name: i, value: updateMod[i], inline: true })) as dynamic[],
-                ""
+                    .filter(i => i !== "updatedDate" && i !== "dependencies")
+                    .map(i => ({ name: i, value: updateMod[i] })) as dynamic[],
+                "https://beatmods.com"
             );
         }
         return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
