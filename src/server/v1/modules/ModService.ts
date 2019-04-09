@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 const StreamZip = require("node-stream-zip");
 import AuditLogService from "./AuditLogService";
+import DiscordManager from "../../modules/DiscordManager";
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -19,6 +20,8 @@ export default class ModService {
         }
         const _id = await this.dao.insert(mod as any);
         new AuditLogService(this.ctx).create(this.ctx.user, "INSERT", "MOD", {}, mod);
+        new DiscordManager().sendWebhook(`${this.ctx.user.username} uploaded ${mod.name} v${mod.version}`, [], "");
+
         return { _id, ...mod } as IDbMod;
     }
     public async find(query: dynamic) {
@@ -81,7 +84,7 @@ export default class ModService {
         return mods.map(mod => mod as IDbMod);
     }
 
-    public async update(mod: IDbMod) {
+    public async update(mod: IDbMod, isInsert = false) {
         if (!mod._id) {
             throw new ParameterError("mod._id");
         }
@@ -125,6 +128,18 @@ export default class ModService {
             },
             updateMod
         );
+        if (Object.keys(updateMod).indexOf("status") !== -1 && !isInsert) {
+            const newStatus = updateMod.status;
+            new DiscordManager().sendWebhook(`${this.ctx.user.username} ${newStatus} ${existing.name} v${existing.version}`, [], "");
+        } else if (!isInsert) {
+            new DiscordManager().sendWebhook(
+                `${this.ctx.user.username} updated ${existing.name} v${existing.version}`,
+                Object.keys(updateMod)
+                    .filter(i => i !== "updatedDate")
+                    .map(i => ({ name: i, value: updateMod[i], inline: true })) as dynamic[],
+                ""
+            );
+        }
         return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
     }
 
@@ -231,7 +246,7 @@ export default class ModService {
                 await this.remove(toId(mod._id));
                 throw new ServerError("mod.upload.zip.unknown");
             }
-            await this.update(mod);
+            await this.update(mod, true);
         }
         return true;
     }

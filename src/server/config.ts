@@ -24,6 +24,9 @@ const config = {
     mongo: {
         uri: "mongodb://localhost:27017/beatsaver"
     },
+    discord: {
+        webhook_url: []
+    },
     redis: <ClientOpts>{
         host: "localhost",
         port: 6379,
