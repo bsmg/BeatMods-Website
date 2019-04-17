@@ -14,7 +14,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/app.js",
     "debug": "babel-node src/app.ts --extensions \".ts\" --inspect-brk=9889",
     "build:dev": "babel-node src/app.ts --extensions \".ts\"",
-    "build:prod": "cross-env NODE_ENV=production babel src -d dist/ --extensions \".ts\" && webpack --env.production --config ./webpack.config",
+    "build:prod": "cross-env NODE_ENV=production babel src -d dist/ --extensions \".ts\" && cross-env NODE_ENV=production webpack --config ./webpack.config",
     "ts-check": "tsc"
   },
   "lint-staged": {
