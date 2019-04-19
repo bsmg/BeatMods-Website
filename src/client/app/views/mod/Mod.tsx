@@ -58,7 +58,20 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                     {this.props.user && this.props.user.admin && (
                         <InputGroup>
                             <Label>Category: </Label>
-                            <Input type="text" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })} />
+                            <Input type="select" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })}>
+                                <option value="Other">Other</option>
+                                <option value="Core">Core</option>
+                                <option value="Cosmetic">Cosmetic</option>
+                                <option value="Practice / Training">Practice / Training</option>
+                                <option value="Gameplay">Gameplay</option>
+                                <option value="Stream Tools">Stream Tools</option>
+                                <option value="Libraries">Libraries</option>
+                                <option value="UI Enhancements">UI Enhancements</option>
+                                <option value="Lighting">Lighting</option>
+                                <option value="Tweaks / Tools">Tweaks / Tools</option>
+                                <option value="Multiplayer">Multiplayer</option>
+                                <option value="Text Changes">Text Changes</option>
+                            </Input>
                         </InputGroup>
                     )}
                     {this.props.user && this.props.user.admin && (
