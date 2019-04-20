@@ -45,11 +45,14 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
             this.setState({ error: "Version is required" });
             return;
         }
-        if (this && this.description != null && this.description.value) {
-            formData.append("description", this.description.value);
-        }
         if (this && this.link != null && this.link.value) {
             formData.append("link", this.link.value);
+        } else {
+            this.setState({ error: "Info link is required" });
+            return;
+        }
+        if (this && this.description != null && this.description.value) {
+            formData.append("description", this.description.value);
         }
         if (this && this.dependencies != null && this.dependencies.value) {
             formData.append("dependencies", this.dependencies.value);
@@ -169,7 +172,7 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
-                                        <Label>More Info Link</Label>
+                                        <Label>More Info Link *</Label>
                                         <Input type="text" placeholder="http://github.com/" innerRef={input => (this.link = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
