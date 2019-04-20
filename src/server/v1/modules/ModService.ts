@@ -8,6 +8,8 @@ import path from "path";
 const StreamZip = require("node-stream-zip");
 import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
+const openpgp = require("openpgp");
+let privkey;
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -181,6 +183,22 @@ export default class ModService {
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };
             mod._id = toId(_id);
+            try {
+                privkey = await new Promise((res, rej) => {
+                    fs.readFile(path.join(process.cwd(), "/keys/privkey.asc"), "utf-8", (err, data) => {
+                        if (err) {
+                            rej(err);
+                        }
+                        openpgp.key.readArmored(data).then(output => {
+                            res(output.keys[0]);
+                        });
+                    });
+                });
+                await privkey.decrypt(process.env.PASSPHRASE);
+            } catch (err) {
+                console.error("ModService.create", "KEY Read", err);
+                throw new ServerError("mod.upload.key.read");
+            }
             let index = 0;
             for (const file of files) {
                 const type = files.length === 1 ? "universal" : index === 0 ? "steam" : "oculus";
@@ -188,6 +206,7 @@ export default class ModService {
                 const fileName = `${name}-${version}.zip`;
                 const fullPath = path.join(process.cwd(), filePath);
                 const fullFile = path.join(fullPath, fileName);
+                const fullSigFile = `${fullFile}.sig`;
                 try {
                     await new Promise((res, rej) => {
                         const mkdir = (dirPath: string, root = "") => {
@@ -244,6 +263,22 @@ export default class ModService {
                 } catch (error) {
                     console.error("ModService.create zip.read", error);
                     throw new ServerError("mod.upload.zip.corrupt");
+                }
+                try {
+                    await new Promise((res, rej) => {
+                        const signOptions = {
+                            message: openpgp.message.fromBinary(fs.createReadStream(fullFile)),
+                            privateKeys: [privkey],
+                            streaming: "node"
+                        };
+                        openpgp.sign(signOptions).then(signed => {
+                            signed.data.pipe(fs.createWriteStream(fullSigFile));
+                            res();
+                        });
+                    });
+                } catch (err) {
+                    console.error("ModService.create", "SIG Create", err);
+                    throw new ServerError("mod.upload.sig.create");
                 }
                 index++;
             }
