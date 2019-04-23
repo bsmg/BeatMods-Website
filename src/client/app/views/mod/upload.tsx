@@ -12,6 +12,7 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
     description: HTMLInputElement | null = null;
     dependencies: HTMLInputElement | null = null;
     link: HTMLInputElement | null = null;
+    category: HTMLInputElement | null = null;
 
     async onSubmit() {
         const formData = new FormData();
@@ -44,14 +45,20 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
             this.setState({ error: "Version is required" });
             return;
         }
+        if (this && this.link != null && this.link.value) {
+            formData.append("link", this.link.value);
+        } else {
+            this.setState({ error: "Info link is required" });
+            return;
+        }
         if (this && this.description != null && this.description.value) {
             formData.append("description", this.description.value);
         }
-        if (this && this.link != null && this.link.value) {
-            formData.append("link", this.link.value);
-        }
         if (this && this.dependencies != null && this.dependencies.value) {
             formData.append("dependencies", this.dependencies.value);
+        }
+        if (this && this.category != null && this.category.value) {
+            formData.append("category", this.category.value);
         }
         try {
             const { data } = await axios({
@@ -139,6 +146,23 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         <Input type="text" placeholder="SongLoader@6.10.0,Ini Parser@2.5.2" innerRef={input => (this.dependencies = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
+                                        <Label>Category</Label>
+                                        <Input type="select" innerRef={input => (this.category = input)}>
+                                            <option value="Other">Other</option>
+                                            <option value="Core">Core</option>
+                                            <option value="Cosmetic">Cosmetic</option>
+                                            <option value="Practice / Training">Practice / Training</option>
+                                            <option value="Gameplay">Gameplay</option>
+                                            <option value="Stream Tools">Stream Tools</option>
+                                            <option value="Libraries">Libraries</option>
+                                            <option value="UI Enhancements">UI Enhancements</option>
+                                            <option value="Lighting">Lighting</option>
+                                            <option value="Tweaks / Tools">Tweaks / Tools</option>
+                                            <option value="Multiplayer">Multiplayer</option>
+                                            <option value="Text Changes">Text Changes</option>
+                                        </Input>
+                                    </InputGroup>
+                                    <InputGroup className="mb-3">
                                         <Label>Description</Label>
                                         <Input
                                             type="textarea"
@@ -148,7 +172,7 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
-                                        <Label>More Info Link</Label>
+                                        <Label>More Info Link *</Label>
                                         <Input type="text" placeholder="http://github.com/" innerRef={input => (this.link = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
