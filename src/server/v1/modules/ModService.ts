@@ -137,14 +137,14 @@ export default class ModService {
         if (Object.keys(updateMod).indexOf("status") !== -1 && !isInsert) {
             const newStatus = updateMod.status;
             new DiscordManager().sendWebhook(`${this.ctx.user.username} ${newStatus} ${existing.name} v${existing.version}`, [], "https://beatmods.com");
-        } else if (!isInsert) {
-            new DiscordManager().sendWebhook(
-                `${this.ctx.user.username} updated ${existing.name} v${existing.version}`,
-                Object.keys(updateMod)
-                    .filter(i => i !== "updatedDate" && i !== "dependencies")
-                    .map(i => ({ name: i, value: updateMod[i] })) as dynamic[],
-                "https://beatmods.com"
-            );
+            // } else if (!isInsert) {
+            //     new DiscordManager().sendWebhook(
+            //         `${this.ctx.user.username} updated ${existing.name} v${existing.version}`,
+            //         Object.keys(updateMod)
+            //             .filter(i => i !== "updatedDate" && i !== "dependencies")
+            //             .map(i => ({ name: i, value: updateMod[i] })) as dynamic[],
+            //         "https://beatmods.com"
+            //     );
         }
         return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
     }
