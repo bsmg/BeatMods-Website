@@ -8,7 +8,7 @@ export default class DiscordManager {
             case "approved":
                 color = 0x42f47d;
                 break;
-            case "denied":
+            case "declined":
                 color = 0xf44141;
                 break;
             default:
