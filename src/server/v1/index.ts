@@ -6,7 +6,6 @@ import { checkAuthorization } from "../modules/AuthManager";
 import config from "../config";
 import userRouter from "./user";
 import modRouter from "./mod";
-import pgpModRouter from "./pgpMod";
 import { catchErrors } from "../modules/Utils";
 
 const authTokenService = new AuthTokenService({
@@ -35,7 +34,6 @@ router.use(
     })
 );
 router.use("/mod", modRouter);
-router.use("/pgpmod", pgpModRouter);
 router.use("/user", userRouter);
 
 export default router;

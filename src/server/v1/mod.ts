@@ -4,6 +4,7 @@ import { catchErrors } from "../modules/Utils";
 import ModService from "./modules/ModService";
 
 import multer from "multer";
+
 const storage = multer.memoryStorage();
 const upload = multer({ limits: { fileSize: 25 * 1024 * 1024 }, storage });
 
@@ -13,7 +14,12 @@ router.get(
     "/",
     catchErrors(async (req, res, next) => {
         const modService = new ModService(req.ctx);
-        return res.send(await modService.list(req.query));
+        let pgp = false;
+        if (req.query && req.query.hasOwnProperty("pgp")) {
+            res.set("Content-Type", "text/plain");
+            pgp = true;
+        }
+        return res.send(await modService.list(req.query, pgp));
     })
 );
 
