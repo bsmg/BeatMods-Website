@@ -9,6 +9,7 @@ router.get(
     "/",
     catchErrors(async (req, res, next) => {
         const modService = new ModService(req.ctx);
+        res.set("Content-Type", "text/plain");
         return res.send(await modService.list(req.query, true));
     })
 );
