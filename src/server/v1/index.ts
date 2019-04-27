@@ -6,6 +6,7 @@ import { checkAuthorization } from "../modules/AuthManager";
 import config from "../config";
 import userRouter from "./user";
 import modRouter from "./mod";
+import pgpModRouter from "./pgpMod";
 import { catchErrors } from "../modules/Utils";
 
 const authTokenService = new AuthTokenService({
@@ -24,10 +25,17 @@ router.post("/signOut", catchErrors(authSessionManager.signOff()));
 router.post("/register", catchErrors(authSessionManager.register()));
 router.use(
     checkAuthorization().unless({
-        path: [{ url: "/api/v1/mod", methods: ["GET"] }, { url: "/api/v1/user", methods: ["GET"] }, "/api/v1/user/current", "/api/v1/user/create"]
+        path: [
+            { url: "/api/v1/mod", methods: ["GET"] },
+            { url: "/api/v1/pgpmod", methods: ["GET"] },
+            { url: "/api/v1/user", methods: ["GET"] },
+            "/api/v1/user/current",
+            "/api/v1/user/create"
+        ]
     })
 );
 router.use("/mod", modRouter);
+router.use("/pgpmod", pgpModRouter);
 router.use("/user", userRouter);
 
 export default router;

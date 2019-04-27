@@ -50,7 +50,7 @@ export default class ModService {
             $options: "i"
         };
     }
-    public async list(params?: any) {
+    public async list(params?: any, pgp: boolean = false) {
         const query: dynamic = {};
         let sort: dynamic | undefined;
         if (params && Object.keys(params).length) {
@@ -89,7 +89,27 @@ export default class ModService {
                 }
             }
         }
-        return mods.map(mod => mod as IDbMod);
+
+        const modMap = mods.map(mod => mod as IDbMod);
+        if (!pgp) {
+            return modMap;
+        } else {
+            if (privkey === undefined) {
+                privkey = await readPrivkey();
+            }
+            return await new Promise((res, rej) => {
+                const signOptions = {
+                    message: openpgp.cleartext.fromText(JSON.stringify(modMap)),
+                    privateKeys: [privkey]
+                };
+                openpgp
+                    .sign(signOptions)
+                    .then(signed => {
+                        res(signed.data);
+                    })
+                    .catch(err => rej(err));
+            });
+        }
     }
 
     public async update(mod: IDbMod, isInsert = false) {
@@ -183,21 +203,13 @@ export default class ModService {
             };
             const { _id } = (await this.insert(mod)) as IDbMod & { _id: Id };
             mod._id = toId(_id);
-            try {
-                privkey = await new Promise((res, rej) => {
-                    fs.readFile(path.join(process.cwd(), "/keys/privkey.asc"), "utf-8", (err, data) => {
-                        if (err) {
-                            rej(err);
-                        }
-                        openpgp.key.readArmored(data).then(output => {
-                            res(output.keys[0]);
-                        });
-                    });
-                });
-                await privkey.decrypt(process.env.PASSPHRASE);
-            } catch (err) {
-                console.error("ModService.create", "KEY Read", err);
-                throw new ServerError("mod.upload.key.read");
+            if (privkey === undefined) {
+                try {
+                    privkey = await readPrivkey();
+                } catch (err) {
+                    console.error("ModService.create", "KEY Read", err);
+                    throw new ServerError("mod.upload.key.read");
+                }
             }
             let index = 0;
             for (const file of files) {
@@ -293,4 +305,19 @@ export default class ModService {
         }
         return true;
     }
+}
+
+async function readPrivkey() {
+    const pk: any = await new Promise((res, rej) => {
+        fs.readFile(path.join(process.cwd(), "/keys/privkey.asc"), "utf-8", (err, data) => {
+            if (err) {
+                rej(err);
+            }
+            openpgp.key.readArmored(data).then(output => {
+                res(output.keys[0]);
+            });
+        });
+    });
+    await pk.decrypt(process.env.PASSPHRASE);
+    return pk;
 }
