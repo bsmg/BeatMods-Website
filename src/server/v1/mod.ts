@@ -15,7 +15,7 @@ router.get(
     catchErrors(async (req, res, next) => {
         const modService = new ModService(req.ctx);
         let pgp = false;
-        if (req.query && req.query.hasOwnProperty("pgp")) {
+        if (req.query.hasOwnProperty("pgp")) {
             res.set("Content-Type", "text/plain");
             pgp = true;
         }
