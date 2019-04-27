@@ -269,10 +269,12 @@ export default class ModService {
                         const signOptions = {
                             message: openpgp.message.fromBinary(fs.createReadStream(fullFile)),
                             privateKeys: [privkey],
+                            detached: true,
                             streaming: "node"
                         };
                         openpgp.sign(signOptions).then(signed => {
-                            signed.data.pipe(fs.createWriteStream(fullSigFile));
+                            signed.signature.pipe(fs.createWriteStream(fullSigFile));
+                            openpgp.stream.readToEnd(signOptions.message.armor()).catch(err => rej(err));
                             res();
                         });
                     });
