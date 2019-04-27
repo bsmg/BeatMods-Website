@@ -99,7 +99,7 @@ export default class ModService {
             }
             return await new Promise((res, rej) => {
                 const signOptions = {
-                    message: openpgp.cleartext.fromText(JSON.stringify(modMap)),
+                    message: openpgp.cleartext.fromText(JSON.stringify(modMap, null, 2)),
                     privateKeys: [privkey]
                 };
                 openpgp
