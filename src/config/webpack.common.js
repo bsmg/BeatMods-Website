@@ -32,7 +32,7 @@ module.exports = {
                 include: helpers.root('src/client'),
                 loader: 'babel-loader'
             },
-            // SCSS files 
+            // SCSS files
             {
                 test: /\.(png|jpg|gif)(\?v=\d+\.\d+\.\d+)?$/,
                 use: "url-loader?limit=100000"
@@ -69,9 +69,7 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(NODE_ENV)
-            }
+            'process.envNODE_ENV': JSON.stringify(NODE_ENV)
         }),
         new HtmlWebpackPlugin({
             template: helpers.root('src/client/public/index.html'),
