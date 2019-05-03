@@ -154,6 +154,7 @@ export default class ModService {
         name: string,
         description: string,
         version: string,
+        gameVersion: string,
         dependencies: string,
         category: string,
         link: string,
@@ -170,12 +171,13 @@ export default class ModService {
                 description: description || "",
                 authorId: toId(user._id),
                 version,
+                gameVersion,
                 link,
                 updatedDate: new Date(),
                 uploadDate: new Date(),
                 status: "pending",
                 downloads: [],
-                category: category || "Uncategorized",
+                category: category || "Other",
                 required: false,
                 dependencies: _dependencies.map(m => m._id)
             };
