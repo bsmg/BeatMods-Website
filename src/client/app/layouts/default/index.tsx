@@ -24,9 +24,9 @@ class DefaultLayout extends React.Component<{ history: any }, { user: any | null
             this.setState({ user: null });
         }
 
-        if (window.location.hash !== "#/mods") {
-            this.props.history.push("/mods");
-        }
+        // if (window.location.hash !== "#/mods") {
+        //     this.props.history.push("/mods");
+        // }
     }
 
     async signOut(e) {
@@ -53,7 +53,10 @@ class DefaultLayout extends React.Component<{ history: any }, { user: any | null
                         <AppSidebarHeader />
                         <AppSidebarForm />
                         <React.Suspense fallback={this.loading()}>
-                            <AppSidebarNav navConfig={navigation} {...this.props} />
+                            <AppSidebarNav
+                                navConfig={this.state && this.state.user && this.state.user.admin ? navigation : { items: navigation.items.slice(0, -1) }}
+                                {...this.props}
+                            />
                         </React.Suspense>
                         <AppSidebarFooter />
                         <AppSidebarMinimizer />
