@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, Button, Card, CardBody, CardDeck, CardFooter, CardHeader, Col, Container, Form, InputGroup, Row } from "reactstrap";
+import { Alert, Button, Card, CardBody, CardDeck, CardTitle, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 import TagInput from "../../utils/tagInput";
 
 export default class ModList extends Component<{ history: any; user: any | null }> {
@@ -18,35 +18,28 @@ export default class ModList extends Component<{ history: any; user: any | null 
             return (
                 <Container className="animated fadeIn p-5">
                     <CardDeck>
-                        <Card>
-                            <CardHeader>
-                                <h3>Game versions</h3>
-                            </CardHeader>
+                        <Card className="mb-3">
                             <CardBody>
-                                <Form>
-                                    <InputGroup>
-                                        <TagInput className="d-block" />
-                                    </InputGroup>
-                                </Form>
+                                <CardTitle className="h3">Game versions</CardTitle>
+                                <TagInput />
                             </CardBody>
-                            <CardFooter>
-                                <Button>Update</Button>
-                            </CardFooter>
+                            <ListGroup className="list-group-flush">
+                                <ListGroupItem>
+                                    <Button color="primary">Update</Button>
+                                </ListGroupItem>
+                            </ListGroup>
                         </Card>
-                        <Card>
-                            <CardHeader>
-                                <h3>Mod categories</h3>
-                            </CardHeader>
+                        <div className="w-100 d-lg-none" />
+                        <Card className="mb-3">
                             <CardBody>
-                                <Form>
-                                    <InputGroup>
-                                        <TagInput className="d-block" />
-                                    </InputGroup>
-                                </Form>
+                                <CardTitle className="h3">Mod categories</CardTitle>
+                                <TagInput />
                             </CardBody>
-                            <CardFooter>
-                                <Button>Update</Button>
-                            </CardFooter>
+                            <ListGroup className="list-group-flush">
+                                <ListGroupItem>
+                                    <Button color="primary">Update</Button>
+                                </ListGroupItem>
+                            </ListGroup>
                         </Card>
                     </CardDeck>
                 </Container>
