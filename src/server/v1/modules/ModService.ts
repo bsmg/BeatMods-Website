@@ -58,7 +58,11 @@ export default class ModService {
             if (params.hash && params.hash.length) {
                 query["downloads.hashMd5.hash"] = params.hash;
             }
-            const fields = { category: "category", status: "status", name: "name", version: "version", author: "author.username" };
+            if (params.gameversion && params.gameversion.length) {
+                params.gameVersion = params.gameversion;
+                delete params.gameversion;
+            }
+            const fields = { category: "category", status: "status", name: "name", version: "version", gameVersion: "gameVersion", author: "author.username" };
             for (const field in fields) {
                 if (params[field] && params[field].length) {
                     if (Array.isArray(params[field])) {

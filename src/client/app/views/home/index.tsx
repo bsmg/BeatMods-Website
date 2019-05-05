@@ -9,7 +9,7 @@ export default class ModList extends Component<{ history: any; user: any | null 
                 <p className="lead">A Beat Saber mod repository maintained by the Beat Saber Modding Group</p>
                 <hr className="my-3" />
                 <p>
-                    Need help installing mods? Check out the <a href="https://bsmg.wiki/beginners-guide">beginners guide</a>.
+                    Need help installing mods? Check out the <a href="https://bsmg.wiki/beginners-guide">beginner's guide</a>.
                     <br />
                     You can also <a href="https://discord.gg/beatsabermods">join the official Discord</a>.
                 </p>
@@ -22,7 +22,9 @@ export default class ModList extends Component<{ history: any; user: any | null 
                         <li>
                             <a href="https://bsaber.com/beatdrop/">BeatDrop</a>
                         </li>
-                        <li>ModAssistant (coming soon)</li>
+                        <li>
+                            <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
+                        </li>
                     </ul>
                 </p>
             </Container>
