@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, Card, CardBody, CardHeader, Col, Container, Form, InputGroup, Row } from "reactstrap";
+import { Alert, Button, Card, CardBody, CardDeck, CardFooter, CardHeader, Col, Container, Form, InputGroup, Row } from "reactstrap";
 import TagInput from "../../utils/tagInput";
 
 export default class ModList extends Component<{ history: any; user: any | null }> {
@@ -17,36 +17,38 @@ export default class ModList extends Component<{ history: any; user: any | null 
         } else {
             return (
                 <Container className="animated fadeIn p-5">
-                    <Row>
-                        <Col lg="6">
-                            <Card>
-                                <CardHeader>
-                                    <h3>Game versions</h3>
-                                </CardHeader>
-                                <CardBody>
-                                    <Form>
-                                        <InputGroup>
-                                            <TagInput className="d-block" placeholder="Test" />
-                                        </InputGroup>
-                                    </Form>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <Col lg="6">
-                            <Card>
-                                <CardHeader>
-                                    <h3>Mod categories</h3>
-                                </CardHeader>
-                                <CardBody>
-                                    <Form>
-                                        <InputGroup>
-                                            <TagInput className="d-block" />
-                                        </InputGroup>
-                                    </Form>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
+                    <CardDeck>
+                        <Card>
+                            <CardHeader>
+                                <h3>Game versions</h3>
+                            </CardHeader>
+                            <CardBody>
+                                <Form>
+                                    <InputGroup>
+                                        <TagInput className="d-block" />
+                                    </InputGroup>
+                                </Form>
+                            </CardBody>
+                            <CardFooter>
+                                <Button>Update</Button>
+                            </CardFooter>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <h3>Mod categories</h3>
+                            </CardHeader>
+                            <CardBody>
+                                <Form>
+                                    <InputGroup>
+                                        <TagInput className="d-block" />
+                                    </InputGroup>
+                                </Form>
+                            </CardBody>
+                            <CardFooter>
+                                <Button>Update</Button>
+                            </CardFooter>
+                        </Card>
+                    </CardDeck>
                 </Container>
             );
         }

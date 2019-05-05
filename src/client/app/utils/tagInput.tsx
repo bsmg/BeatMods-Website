@@ -67,7 +67,8 @@ export default class TagInput extends Component<Partial<Input> & Partial<HTMLInp
                         ))}
                     </p>
                 )}
-                // @ts-ignore: Props extend Input
+                {/*
+                // @ts-ignore */}
                 <Input {...this.props} type="text" onChange={this.handleChange} onKeyUp={this.handleKeyUp} value={this.state.display} />
             </div>
         );
