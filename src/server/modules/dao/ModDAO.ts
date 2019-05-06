@@ -40,6 +40,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
             {
                 $match: {
                     name: existingMod.name,
+                    gameVersion: { $ne: existingMod.gameVersion },
                     _id: { $ne: toId(existingMod._id) }
                 }
             },
