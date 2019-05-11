@@ -123,8 +123,8 @@ export default class ModList extends Component<
                     </Alert>
                 )}
                 <div className="mods">
-                    {this.state.modList.map(mod => {
-                        return <Mod key={`mod-${mod._id}`} mod={mod} user={this.props.user} refresh={this.refresh} />;
+                    {this.state.modList.map((mod, i) => {
+                        return <Mod key={`mod-${i}`} mod={mod} user={this.props.user} refresh={this.refresh} />;
                     })}
                 </div>
             </div>
