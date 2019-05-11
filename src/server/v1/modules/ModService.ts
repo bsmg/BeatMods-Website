@@ -132,7 +132,14 @@ export default class ModService {
         }
         if (changes.status && changes.status === "approved") {
             const older = await this.dao.getOldVersions(existing);
-            await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
+            for (const oldMod of older) {
+                if (oldMod.status === "inactive" || oldMod.status === "declined") {
+                    // Nothing to do, this status is fine.
+                } else {
+                    const newStatus = oldMod.status === "approved" ? "inactive" : "declined";
+                    await this.dao.update(toId(oldMod._id), { status: newStatus });
+                }
+            }
         }
         if (changes["_id"]) {
             delete changes["_id"];
