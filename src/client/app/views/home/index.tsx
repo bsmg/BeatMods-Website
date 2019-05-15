@@ -5,7 +5,7 @@ export default class Home extends Component<{ history: any; user: any | null }> 
     render() {
         return (
             <Container className="animated fadeIn p-5">
-                <h1 className="display-3">Welcome to BeatMods</h1>
+                <h2 className="display-4">Welcome to BeatMods</h2>
                 <p className="lead">A Beat Saber mod repository maintained by the Beat Saber Modding Group</p>
                 <hr className="my-3" />
                 <p>
