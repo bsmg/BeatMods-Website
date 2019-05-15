@@ -8,6 +8,7 @@ import path from "path";
 const StreamZip = require("node-stream-zip");
 import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
+import { gameVersions } from "../../../config/lists";
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -78,7 +79,7 @@ export default class ModService {
         }
         const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
 
-        const mods = (await cursor.toArray()).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: "unspecified" }));
+        const mods = await cursor.toArray();
         if (this.ctx.user && this.ctx.user._id && !this.ctx.user.admin) {
             const personalCursor = await this.dao.list({
                 authorId: toId(this.ctx.user._id),
@@ -91,7 +92,7 @@ export default class ModService {
                 }
             }
         }
-        return mods.map(mod => mod as IDbMod);
+        return mods.map(mod => mod as IDbMod).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: gameVersions[gameVersions.length - 1] }));
     }
 
     public async update(changes: IDbMod, isInsert = false) {
@@ -108,7 +109,7 @@ export default class ModService {
                 throw new ParameterError("mod.auth_required_post_approval");
             }
             const baseEditProps = new Set(["description", "link", "dependencies"]);
-            const modEditProps = new Set(["name", "version", "status", "required", "category"]);
+            const modEditProps = new Set(["name", "version", "gameVersion", "status", "required", "category"]);
             for (const prop of Object.keys(changes)) {
                 const val = changes[prop];
                 if (typeof val !== "string" && typeof val !== "boolean" && !(val instanceof String) && !(val instanceof Boolean)) {
