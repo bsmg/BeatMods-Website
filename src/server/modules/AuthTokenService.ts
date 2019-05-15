@@ -49,9 +49,9 @@ export default class AuthTokenService {
         this.alg = options.alg || "HS256";
         this.publicKey = options.publicKey || "shared-secret";
         this.privateKey = options.privateKey || "shared-secret";
-        this.accessTokenLifetime = options.accessTokenLifetime || 15 * 60;
+        this.accessTokenLifetime = options.accessTokenLifetime || 60 * 60 * 24 * 7;
         this.softAccessTokenLifetime = options.softAccessTokenLifetime || 10;
-        this.refreshTokenLifetime = options.refreshTokenLifetime || 30 * 60;
+        this.refreshTokenLifetime = options.refreshTokenLifetime || 60 * 60 * 24 * 30;
         this.verifyOptions = options.verifyOptions || {};
         this.signOptions = options.signOptions || {};
     }
