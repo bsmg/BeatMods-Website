@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container } from "reactstrap";
 
-export default class ModList extends Component<{ history: any; user: any | null }> {
+export default class Home extends Component<{ history: any; user: any | null }> {
     render() {
         return (
             <Container className="animated fadeIn p-5">
