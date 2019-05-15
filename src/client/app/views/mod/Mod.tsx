@@ -58,6 +58,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                                     this.update({ name: e.target.value });
                                 }
                             }}
+                            disabled={!this.props.user.admin}
                         />
                     </InputGroup>
                     <InputGroup>
@@ -70,6 +71,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                                     this.update({ version: e.target.value });
                                 }
                             }}
+                            disabled={!this.props.user.admin}
                         />
                     </InputGroup>
                     <InputGroup>
@@ -140,7 +142,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
         return (
             <div className="mod__wrapper">
                 <div className="mod">
-                    {mod.status !== "declined" && this.props.user && (this.props.user.admin || this.props.user._id === this.props.mod.authorId) && (
+                    {mod.status !== "declined" && this.props.user && (this.props.user.admin || (this.props.user._id === this.props.mod.authorId && mod.status !== "approved")) && (
                         <span className="edit" onClick={() => this.setState({ editing: !this.state.editing })}>
                             <i className="fa fa-edit" />
                         </span>

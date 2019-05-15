@@ -44,7 +44,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                     _id: { $ne: toId(existingMod._id) }
                 }
             },
-            { $project: { _id: 1, name: 1, version: { $split: ["$version", "."] } } },
+            { $project: { _id: 1, name: 1, status: 1, version: { $split: ["$version", "."] } } },
             {
                 $match: {
                     $or: [
@@ -74,7 +74,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                     ]
                 }
             },
-            { $project: { _id: 1 } }
+            { $project: { _id: 1, status: 1 } }
         ])).toArray();
     }
 
