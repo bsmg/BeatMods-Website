@@ -78,7 +78,7 @@ export default class ModService {
         }
         const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
 
-        const mods = await cursor.toArray();
+        const mods = (await cursor.toArray()).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: "unspecified" }));
         if (this.ctx.user && this.ctx.user._id && !this.ctx.user.admin) {
             const personalCursor = await this.dao.list({
                 authorId: toId(this.ctx.user._id),

@@ -158,7 +158,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             </span>
                         )}{" "}
                         &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}
-                        &nbsp;|&nbsp;For {mod.gameVersion || "Unspecified"}
+                        &nbsp;|&nbsp;For {mod.gameVersion}
                     </h4>
                     <div className="badges">
                         {mod.category && <span className={`badge badge-secondary`}>{mod.category}</span>}
