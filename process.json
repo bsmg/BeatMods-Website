@@ -3,6 +3,9 @@
         "name": "BeatMods",
         "script": "dist/app.js",
         "autorestart": true,
-        "watch": false
+        "watch": false,
+        "env": {
+            "NODE_ENV": "production"
+        }
     }]
 }

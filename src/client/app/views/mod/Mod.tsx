@@ -6,6 +6,7 @@ import Input from "reactstrap/lib/Input";
 import InputGroup from "reactstrap/lib/InputGroup";
 import Label from "reactstrap/lib/Label";
 import moment from "moment";
+// @ts-ignore
 import { gameVersions, modCategories } from "../../../../config/lists";
 const sanitizeHtml = require("sanitize-html");
 export default class Mod extends Component<{ mod: IMod; user: any | null; refresh: any }, { editing: boolean; update: Partial<IMod> }> {

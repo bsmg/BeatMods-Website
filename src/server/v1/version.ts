@@ -1,6 +1,7 @@
 import * as express from "express";
 
 import { catchErrors } from "../modules/Utils";
+// @ts-ignore
 import { gameVersions } from "../../config/lists";
 
 const router = express.Router();

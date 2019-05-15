@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Alert, Button, Card, CardBody, Col, Container, Form, Input, InputGroup, Row, FormText, Label } from "reactstrap";
 import { Link } from "react-router-dom";
+// @ts-ignore
 import { gameVersions, modCategories } from "../../../../config/lists";
 
 export default class SongUpload extends Component<{ history: any; user: any | null }, { error: string | null }> {
