@@ -6,13 +6,13 @@ import { ParameterError } from "../../types/error";
 
 const router = express.Router();
 
-router.get(
-    "/",
-    catchErrors(async (req, res, next) => {
-        const userService = new UserService(req.ctx);
-        return res.send(await userService.list());
-    })
-);
+// router.get(
+//     "/",
+//     catchErrors(async (req, res, next) => {
+//         const userService = new UserService(req.ctx);
+//         return res.send(await userService.list());
+//     })
+// );
 
 router.post(
     "/create",
