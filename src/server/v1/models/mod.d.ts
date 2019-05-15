@@ -6,6 +6,7 @@ export interface IDbMod {
     name: string;
     authorId: Id;
     version: string;
+    gameVersion: string;
     uploadDate: Date;
     updatedDate: Date;
     description: string;
@@ -24,6 +25,7 @@ export interface IMod {
     authorId: string;
     author: user;
     version: string;
+    gameVersion: string;
     uploadDate: Date;
     updatedDate: Date;
     description: string;

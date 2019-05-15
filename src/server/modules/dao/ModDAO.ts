@@ -40,6 +40,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
             {
                 $match: {
                     name: existingMod.name,
+                    gameVersion: existingMod.gameVersion,
                     _id: { $ne: toId(existingMod._id) }
                 }
             },
@@ -134,6 +135,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     _id: "$_id",
                                     name: { $first: "$name" },
                                     version: { $first: "$version" },
+                                    gameVersion: { $first: "$gameVersion" },
                                     authorId: { $first: "$authorId" },
                                     uploadDate: { $first: "$uploadDate" },
                                     updatedDate: { $first: "$updatedDate" },
@@ -153,6 +155,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     name: 1,
                                     name_lower: { $toLower: "$name" },
                                     version: 1,
+                                    gameVersion: 1,
                                     authorId: 1,
                                     uploadDate: 1,
                                     updatedDate: 1,
@@ -176,6 +179,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                                     name: 1,
                                     name_lower: { $toLower: "$name" },
                                     version: 1,
+                                    gameVersion: 1,
                                     authorId: 1,
                                     uploadDate: 1,
                                     updatedDate: 1,
@@ -207,6 +211,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                         name: { $first: "$name" },
                         name_lower: { $first: "$name_lower" },
                         version: { $first: "$version" },
+                        gameVersion: { $first: "$gameVersion" },
                         authorId: { $first: "$authorId" },
                         uploadDate: { $first: "$uploadDate" },
                         updatedDate: { $first: "$updatedDate" },
@@ -227,6 +232,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                         _id: "$id",
                         name: 1,
                         version: 1,
+                        gameVersion: 1,
                         authorId: 1,
                         uploadDate: 1,
                         updatedDate: 1,

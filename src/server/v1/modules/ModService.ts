@@ -58,7 +58,11 @@ export default class ModService {
             if (params.hash && params.hash.length) {
                 query["downloads.hashMd5.hash"] = params.hash;
             }
-            const fields = { category: "category", status: "status", name: "name", version: "version", author: "author.username" };
+            if (params.gameversion && params.gameversion.length) {
+                params.gameVersion = params.gameversion;
+                delete params.gameversion;
+            }
+            const fields = { category: "category", status: "status", name: "name", version: "version", gameVersion: "gameVersion", author: "author.username" };
             for (const field in fields) {
                 if (params[field] && params[field].length) {
                     if (Array.isArray(params[field])) {
@@ -74,8 +78,8 @@ export default class ModService {
         }
         const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
 
-        const mods = await cursor.toArray();
-        if (this.ctx.user && this.ctx.user._id) {
+        const mods = (await cursor.toArray()).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: "unspecified" }));
+        if (this.ctx.user && this.ctx.user._id && !this.ctx.user.admin) {
             const personalCursor = await this.dao.list({
                 authorId: toId(this.ctx.user._id),
                 status: { $nin: ["approved", "inactive"] }
@@ -175,6 +179,7 @@ export default class ModService {
         name: string,
         description: string,
         version: string,
+        gameVersion: string,
         dependencies: string,
         category: string,
         link: string,
@@ -191,12 +196,13 @@ export default class ModService {
                 description: description || "",
                 authorId: toId(user._id),
                 version,
+                gameVersion,
                 link,
                 updatedDate: new Date(),
                 uploadDate: new Date(),
                 status: "pending",
                 downloads: [],
-                category: category || "Uncategorized",
+                category: category || "Other",
                 required: false,
                 dependencies: _dependencies.map(m => m._id)
             };

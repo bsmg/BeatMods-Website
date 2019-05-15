@@ -29,6 +29,7 @@ router.post(
             req.body.name || "",
             req.body.description || "",
             req.body.version || "",
+            req.body.gameVersion || "",
             req.body.dependencies || "",
             req.body.category || "",
             req.body.link || "",

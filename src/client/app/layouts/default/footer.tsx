@@ -7,7 +7,7 @@ export default class DefaultFooter extends React.Component<{}, {}> {
             <React.Fragment>
                 <div>
                     <span>vanZeben and </span>
-                    <a href="https://github.com/beat-saber-modding-group/BeatMods-Website/graphs/contributors">contributors</a>
+                    <a href="https://github.com/beat-saber-modding-group/BeatMods-Website/graphs/contributors">contributors </a>
                     <span>&copy; 2019</span>
                 </div>
                 <div className="ml-auto">
