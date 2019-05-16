@@ -25,7 +25,12 @@ router.post("/signOut", catchErrors(authSessionManager.signOff()));
 router.post("/register", catchErrors(authSessionManager.register()));
 router.use(
     checkAuthorization().unless({
-        path: [{ url: "/api/v1/mod", methods: ["GET"] }, { url: "/api/v1/user", methods: ["GET"] }, "/api/v1/user/current", "/api/v1/user/create", "/api/v1/version"]
+        path: [
+            { url: "/api/v1/mod", methods: ["GET"] },
+            { url: "/api/v1/version", methods: ["GET"] },
+            "/api/v1/user/current",
+            "/api/v1/user/create"
+        ]
     })
 );
 router.use("/mod", modRouter);
