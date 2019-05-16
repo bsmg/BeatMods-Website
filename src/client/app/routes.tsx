@@ -2,6 +2,7 @@ import ModList from "./views/mod/list";
 import ModUpload from "./views/mod/upload";
 import Home from "./views/home";
 import Settings from "./views/settings";
+import ChangePassword from "./views/pages/ChangePassword";
 
 const routes = [
     {
@@ -21,6 +22,12 @@ const routes = [
         exact: true,
         name: "Mod Upload",
         component: ModUpload
+    },
+    {
+        path: "/changepassword",
+        exact: true,
+        name: "Change Password",
+        component: ChangePassword
     },
     {
         path: "/settings",
