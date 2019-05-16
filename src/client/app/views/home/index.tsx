@@ -23,7 +23,7 @@ export default class Home extends Component<{ history: any; user: any | null }> 
                             <a href="https://bsaber.com/beatdrop/">BeatDrop</a>
                         </li>
                         <li>
-                            <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistanteee</a>
+                            <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
                         </li>
                     </ul>
                 </p>
