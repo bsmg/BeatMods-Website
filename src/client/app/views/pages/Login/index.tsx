@@ -77,7 +77,7 @@ export default class Login extends Component<{ history: any }, { username: strin
                                                 <Col xs="6" className="text-right">
                                                     <Button
                                                         onClick={() => {
-                                                            this.props.history.push("/mods");
+                                                            this.props.history.push("/");
                                                         }}
                                                         color="link"
                                                         className="px-0"

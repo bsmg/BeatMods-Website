@@ -6,6 +6,7 @@ import { checkAuthorization } from "../modules/AuthManager";
 import config from "../config";
 import userRouter from "./user";
 import modRouter from "./mod";
+import versionRouter from "./version";
 import { catchErrors } from "../modules/Utils";
 
 const authTokenService = new AuthTokenService({
@@ -26,8 +27,7 @@ router.use(
     checkAuthorization().unless({
         path: [
             { url: "/api/v1/mod", methods: ["GET"] },
-            { url: "/api/v1/pgpmod", methods: ["GET"] },
-            { url: "/api/v1/user", methods: ["GET"] },
+            { url: "/api/v1/version", methods: ["GET"] },
             "/api/v1/user/current",
             "/api/v1/user/create"
         ]
@@ -35,5 +35,6 @@ router.use(
 );
 router.use("/mod", modRouter);
 router.use("/user", userRouter);
+router.use("/version", versionRouter);
 
 export default router;

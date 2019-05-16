@@ -10,6 +10,8 @@ import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
 const openpgp = require("openpgp");
 let privkey;
+// @ts-ignore
+import { gameVersions } from "../../../config/lists";
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -60,7 +62,11 @@ export default class ModService {
             if (params.hash && params.hash.length) {
                 query["downloads.hashMd5.hash"] = params.hash;
             }
-            const fields = { category: "category", status: "status", name: "name", version: "version", author: "author.username" };
+            if (params.gameversion && params.gameversion.length) {
+                params.gameVersion = params.gameversion;
+                delete params.gameversion;
+            }
+            const fields = { category: "category", status: "status", name: "name", version: "version", gameVersion: "gameVersion", author: "author.username" };
             for (const field in fields) {
                 if (params[field] && params[field].length) {
                     if (Array.isArray(params[field])) {
@@ -77,7 +83,7 @@ export default class ModService {
         const cursor = await this.dao.list(Object.keys(query).length ? query : undefined, sort ? { sort } : undefined);
 
         const mods = await cursor.toArray();
-        if (this.ctx.user && this.ctx.user._id) {
+        if (this.ctx.user && this.ctx.user._id && !this.ctx.user.admin) {
             const personalCursor = await this.dao.list({
                 authorId: toId(this.ctx.user._id),
                 status: { $nin: ["approved", "inactive"] }
@@ -90,7 +96,7 @@ export default class ModService {
             }
         }
 
-        const modMap = mods.map(mod => mod as IDbMod);
+        const modMap = mods.map(mod => mod as IDbMod).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: gameVersions[gameVersions.length - 1] }));
         if (!pgp) {
             return modMap;
         } else {
@@ -112,63 +118,84 @@ export default class ModService {
         }
     }
 
-    public async update(mod: IDbMod, isInsert = false) {
-        if (!mod._id) {
+    public async update(changes: IDbMod, isInsert = false) {
+        if (!changes._id) {
             throw new ParameterError("mod._id");
         }
-        const existing = await this.dao.get(toId(mod._id));
-        if (!this.ctx.user || (!this.ctx.user.admin && toId(mod.authorId).toHexString() !== toId(this.ctx.user._id).toHexString())) {
+        const existing = await this.dao.get(toId(changes._id));
+        if (!this.ctx.user || (!this.ctx.user.admin && toId(existing.authorId).toHexString() !== toId(this.ctx.user._id).toHexString())) {
             throw new ServerError("mod.no_permissions");
         }
 
-        const updateMod: Partial<IDbMod> = {};
-        const authenticationProps = ["status", "required"];
-        for (const prop in mod) {
-            if (prop in mod) {
-                if (prop in authenticationProps && !(this.ctx.user && this.ctx.user.admin)) {
-                    throw new ParameterError(`mod.auth_required.${prop}`);
+        if (!isInsert) {
+            if (!this.ctx.user.admin && existing.status === "approved") {
+                throw new ParameterError("mod.auth_required_post_approval");
+            }
+            const baseEditProps = new Set(["description", "link", "dependencies"]);
+            const modEditProps = new Set(["name", "version", "gameVersion", "status", "required", "category"]);
+            for (const prop of Object.keys(changes)) {
+                const val = changes[prop];
+                if (typeof val !== "string" && typeof val !== "boolean" && !(val instanceof String) && !(val instanceof Boolean)) {
+                    // Might be an attempt at MongoDB injection
+                    throw new ParameterError("mod.illegal_value_type");
                 }
-                updateMod[prop] = mod[prop];
+                if (baseEditProps.has(prop)) {
+                    // If they can edit anything, they can edit this
+                } else if (modEditProps.has(prop)) {
+                    if (!this.ctx.user.admin) {
+                        throw new ParameterError(`mod.auth_required.${prop}`);
+                    }
+                } else if (prop !== "_id") {
+                    // "_id" will get deleted in a bit anyway
+                    throw new ParameterError("mod.illegal_property");
+                }
             }
         }
-        if (Object.keys(updateMod).length === 0) {
+        if (Object.keys(changes).length === 0) {
             return new ParameterError(`mod.no_properties_updated`);
         }
-        updateMod["updatedDate"] = new Date();
-        if (updateMod.dependencies && typeof updateMod.dependencies === "string") {
-            updateMod.dependencies = (await this.dao.getDependencies(updateMod.dependencies)).map(item => toId(item._id));
+        changes["updatedDate"] = new Date();
+        if (changes.dependencies && typeof changes.dependencies === "string") {
+            changes.dependencies = (await this.dao.getDependencies(changes.dependencies)).map(item => toId(item._id));
         }
-        if (updateMod.status && updateMod.status === "approved") {
+        if (changes.status && changes.status === "approved") {
             const older = await this.dao.getOldVersions(existing);
-            await this.dao.updateMatch({ _id: { $in: older.map(i => toId(i._id)) } }, { status: "inactive" });
+            for (const oldMod of older) {
+                if (oldMod.status === "inactive" || oldMod.status === "declined") {
+                    // Nothing to do, this status is fine.
+                } else {
+                    const newStatus = oldMod.status === "approved" ? "inactive" : "declined";
+                    await this.dao.update(toId(oldMod._id), { status: newStatus });
+                }
+            }
         }
-        if (updateMod["_id"]) {
-            delete updateMod["_id"];
+        if (changes["_id"]) {
+            delete changes["_id"];
         }
         new AuditLogService(this.ctx).create(
             this.ctx.user,
             "UPDATE",
             "MOD",
             {
-                ...Object.keys(updateMod)
+                ...Object.keys(changes)
                     .map(k => ({ [k]: existing[k] }))
                     .reduce((acc, cur, i) => ({ ...acc, ...cur }), {})
             },
-            updateMod
+            changes
         );
-        if (Object.keys(updateMod).indexOf("status") !== -1 && !isInsert) {
-            const newStatus = updateMod.status;
+        if (Object.keys(changes).indexOf("status") !== -1 && !isInsert) {
+            const newStatus = changes.status;
             new DiscordManager().sendWebhook(`${this.ctx.user.username} ${newStatus} ${existing.name} v${existing.version}`, [], "https://beatmods.com");
             // } else if (!isInsert) {
             //     new DiscordManager().sendWebhook(
             //         `${this.ctx.user.username} updated ${existing.name} v${existing.version}`,
-            //         Object.keys(updateMod)
+            //         Object.keys(changes)
             //             .filter(i => i !== "updatedDate" && i !== "dependencies")
-            //             .map(i => ({ name: i, value: updateMod[i] })) as dynamic[],
+            //             .map(i => ({ name: i, value: changes[i] })) as dynamic[],
             //         "https://beatmods.com"
             //     );
         }
-        return (await this.dao.update(toId(mod._id), updateMod)) as IDbMod;
+        return (await this.dao.update(toId(existing._id), changes)) as IDbMod;
     }
 
     public async create(
@@ -176,6 +203,7 @@ export default class ModService {
         name: string,
         description: string,
         version: string,
+        gameVersion: string,
         dependencies: string,
         category: string,
         link: string,
@@ -192,12 +220,13 @@ export default class ModService {
                 description: description || "",
                 authorId: toId(user._id),
                 version,
+                gameVersion,
                 link,
                 updatedDate: new Date(),
                 uploadDate: new Date(),
                 status: "pending",
                 downloads: [],
-                category: category || "Uncategorized",
+                category: category || "Other",
                 required: false,
                 dependencies: _dependencies.map(m => m._id)
             };

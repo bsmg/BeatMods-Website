@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Alert, Button, Card, CardBody, Col, Container, Form, Input, InputGroup, Row, FormText, Label } from "reactstrap";
 import { Link } from "react-router-dom";
+// @ts-ignore
+import { gameVersions, modCategories } from "../../../../config/lists";
 
 export default class SongUpload extends Component<{ history: any; user: any | null }, { error: string | null }> {
     fileUpload: HTMLInputElement | null = null;
@@ -9,6 +11,7 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
     steamFileUpload: HTMLInputElement | null = null;
     name: HTMLInputElement | null = null;
     version: HTMLInputElement | null = null;
+    gameVersion: HTMLInputElement | null = null;
     description: HTMLInputElement | null = null;
     dependencies: HTMLInputElement | null = null;
     link: HTMLInputElement | null = null;
@@ -43,6 +46,12 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
             formData.append("version", this.version.value);
         } else {
             this.setState({ error: "Version is required" });
+            return;
+        }
+        if (this && this.gameVersion != null && this.gameVersion.value) {
+            formData.append("gameVersion", this.gameVersion.value);
+        } else {
+            this.setState({ error: "Game version is required" });
             return;
         }
         if (this && this.link != null && this.link.value) {
@@ -142,24 +151,23 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         <Input type="text" placeholder="0.0.1" innerRef={input => (this.version = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
+                                        <Label>Game Version *</Label>
+                                        <Input type="select" innerRef={input => (this.gameVersion = input)}>
+                                            {gameVersions.map(v => (
+                                                <option value={v}>{v}</option>
+                                            ))}
+                                        </Input>
+                                    </InputGroup>
+                                    <InputGroup className="mb-3">
                                         <Label>Dependencies</Label>
                                         <Input type="text" placeholder="SongLoader@6.10.0,Ini Parser@2.5.2" innerRef={input => (this.dependencies = input)} />
                                     </InputGroup>
                                     <InputGroup className="mb-3">
                                         <Label>Category</Label>
                                         <Input type="select" innerRef={input => (this.category = input)}>
-                                            <option value="Other">Other</option>
-                                            <option value="Core">Core</option>
-                                            <option value="Cosmetic">Cosmetic</option>
-                                            <option value="Practice / Training">Practice / Training</option>
-                                            <option value="Gameplay">Gameplay</option>
-                                            <option value="Stream Tools">Stream Tools</option>
-                                            <option value="Libraries">Libraries</option>
-                                            <option value="UI Enhancements">UI Enhancements</option>
-                                            <option value="Lighting">Lighting</option>
-                                            <option value="Tweaks / Tools">Tweaks / Tools</option>
-                                            <option value="Multiplayer">Multiplayer</option>
-                                            <option value="Text Changes">Text Changes</option>
+                                            {modCategories.map(c => (
+                                                <option value={c}>{c}</option>
+                                            ))}
                                         </Input>
                                     </InputGroup>
                                     <InputGroup className="mb-3">

@@ -6,7 +6,7 @@ import ModService from "./modules/ModService";
 import multer from "multer";
 
 const storage = multer.memoryStorage();
-const upload = multer({ limits: { fileSize: 25 * 1024 * 1024 }, storage });
+const upload = multer({ limits: { fileSize: 75 * 1024 * 1024 }, storage });
 
 const router = express.Router();
 
@@ -35,6 +35,7 @@ router.post(
             req.body.name || "",
             req.body.description || "",
             req.body.version || "",
+            req.body.gameVersion || "",
             req.body.dependencies || "",
             req.body.category || "",
             req.body.link || "",

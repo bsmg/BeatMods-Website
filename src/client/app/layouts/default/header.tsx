@@ -24,9 +24,16 @@ export default class DefaultHeader extends React.Component<{ onLogout: any; user
 
                 <Nav className="ml-auto" navbar={true}>
                     {this.props.user && (
-                        <NavItem className="px-3">
-                            <NavLink onClick={this.props.onLogout}>Logout</NavLink>
-                        </NavItem>
+                        <>
+                            <NavItem className="px-3">
+                                <NavLink href="/#/changepassword">Change Password</NavLink>
+                            </NavItem>
+                            <NavItem className="px-3">
+                                <NavLink className="text-danger" href="javascript:void" onClick={this.props.onLogout}>
+                                    Logout
+                                </NavLink>
+                            </NavItem>
+                        </>
                     )}
                     {!this.props.user && (
                         <NavItem className="px-3">

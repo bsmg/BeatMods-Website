@@ -6,6 +6,8 @@ import Input from "reactstrap/lib/Input";
 import InputGroup from "reactstrap/lib/InputGroup";
 import Label from "reactstrap/lib/Label";
 import moment from "moment";
+// @ts-ignore
+import { gameVersions, modCategories } from "../../../../config/lists";
 const sanitizeHtml = require("sanitize-html");
 export default class Mod extends Component<{ mod: IMod; user: any | null; refresh: any }, { editing: boolean; update: Partial<IMod> }> {
     constructor(props) {
@@ -53,8 +55,11 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             type="text"
                             value={this.state.update.name || mod.name}
                             onChange={e => {
-                                if (e.target.value) { this.update({ name: e.target.value }); }
+                                if (e.target.value) {
+                                    this.update({ name: e.target.value });
+                                }
                             }}
+                            disabled={!this.props.user.admin}
                         />
                     </InputGroup>
                     <InputGroup>
@@ -63,26 +68,28 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             type="text"
                             value={this.state.update.version || mod.version}
                             onChange={e => {
-                                if (e.target.value) { this.update({ version: e.target.value }); }
+                                if (e.target.value) {
+                                    this.update({ version: e.target.value });
+                                }
                             }}
+                            disabled={!this.props.user.admin}
                         />
+                    </InputGroup>
+                    <InputGroup>
+                        <Label>Game Version: *</Label>
+                        <Input type="select" value={this.state.update.gameVersion || mod.gameVersion} onChange={e => this.update({ gameVersion: e.target.value })}>
+                            {gameVersions.map(v => (
+                                <option value={v}>{v}</option>
+                            ))}
+                        </Input>
                     </InputGroup>
                     {this.props.user && this.props.user.admin && (
                         <InputGroup>
                             <Label>Category: </Label>
                             <Input type="select" value={this.state.update.category || mod.category} onChange={e => this.update({ category: e.target.value })}>
-                                <option value="Other">Other</option>
-                                <option value="Core">Core</option>
-                                <option value="Cosmetic">Cosmetic</option>
-                                <option value="Practice / Training">Practice / Training</option>
-                                <option value="Gameplay">Gameplay</option>
-                                <option value="Stream Tools">Stream Tools</option>
-                                <option value="Libraries">Libraries</option>
-                                <option value="UI Enhancements">UI Enhancements</option>
-                                <option value="Lighting">Lighting</option>
-                                <option value="Tweaks / Tools">Tweaks / Tools</option>
-                                <option value="Multiplayer">Multiplayer</option>
-                                <option value="Text Changes">Text Changes</option>
+                                {modCategories.map(c => (
+                                    <option value={c}>{c}</option>
+                                ))}
                             </Input>
                         </InputGroup>
                     )}
@@ -118,7 +125,9 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             type="text"
                             value={this.state.update.link || mod.link}
                             onChange={e => {
-                                if (e.target.value) { this.update({ link: e.target.value }); }
+                                if (e.target.value) {
+                                    this.update({ link: e.target.value });
+                                }
                             }}
                         />
                     </InputGroup>{" "}
@@ -134,7 +143,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
         return (
             <div className="mod__wrapper">
                 <div className="mod">
-                    {mod.status !== "declined" && this.props.user && (this.props.user.admin || this.props.user._id === this.props.mod.authorId) && (
+                    {mod.status !== "declined" && this.props.user && (this.props.user.admin || (this.props.user._id === this.props.mod.authorId && mod.status !== "approved")) && (
                         <span className="edit" onClick={() => this.setState({ editing: !this.state.editing })}>
                             <i className="fa fa-edit" />
                         </span>
@@ -152,6 +161,7 @@ export default class Mod extends Component<{ mod: IMod; user: any | null; refres
                             </span>
                         )}{" "}
                         &nbsp;|&nbsp;Updated {moment(new Date(mod.updatedDate || mod.uploadDate)).fromNow()}
+                        &nbsp;|&nbsp;For {mod.gameVersion}
                     </h4>
                     <div className="badges">
                         {mod.category && <span className={`badge badge-secondary`}>{mod.category}</span>}
