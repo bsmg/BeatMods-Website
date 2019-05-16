@@ -8,6 +8,7 @@ import path from "path";
 const StreamZip = require("node-stream-zip");
 import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
+// @ts-ignore
 import { gameVersions } from "../../../config/lists";
 export default class ModService {
     constructor(protected ctx: IContext) {
