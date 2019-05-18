@@ -1,5 +1,5 @@
 module.exports = {
-    gameVersions: ["0.13.2"],
+    gameVersions: ["0.13.2", "0.13.0"],
     modCategories: [
         "Other",
         "Core",

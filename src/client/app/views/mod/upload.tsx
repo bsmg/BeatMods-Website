@@ -154,7 +154,9 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         <Label>Game Version *</Label>
                                         <Input type="select" innerRef={input => (this.gameVersion = input)}>
                                             {gameVersions.map(v => (
-                                                <option value={v}>{v}</option>
+                                                <option value={v} key={v}>
+                                                    {v}
+                                                </option>
                                             ))}
                                         </Input>
                                     </InputGroup>
@@ -166,7 +168,9 @@ export default class SongUpload extends Component<{ history: any; user: any | nu
                                         <Label>Category</Label>
                                         <Input type="select" innerRef={input => (this.category = input)}>
                                             {modCategories.map(c => (
-                                                <option value={c}>{c}</option>
+                                                <option value={c} key={c}>
+                                                    {c}
+                                                </option>
                                             ))}
                                         </Input>
                                     </InputGroup>

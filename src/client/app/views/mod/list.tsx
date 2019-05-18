@@ -5,21 +5,26 @@ import queryString from "querystring";
 import { debounce } from "throttle-debounce";
 import Mod from "./Mod";
 import { Alert, FormGroup, Label, Input } from "reactstrap";
+// @ts-ignore
+import { gameVersions } from "../../../../config/lists";
 
 export default class ModList extends Component<
     { history: any; user: any | null },
-    { modList: IMod[]; query: { search: string; status: string[] }; error: string; sort: string; sortDirection: number }
+    { modList: IMod[]; query: { search: string; status: string[]; gameVersion: string }; error: string; sort: string; sortDirection: number }
 > {
     constructor(props) {
         super(props);
         this.refresh = this.refresh.bind(this);
         this.refresh = debounce(500, this.refresh);
-        this.state = { error: "", modList: [], query: { search: "", status: ["approved"] }, sort: "", sortDirection: 1 };
+        this.state = { error: "", modList: [], query: { search: "", status: ["approved"], gameVersion: gameVersions[0] }, sort: "", sortDirection: 1 };
     }
     async componentDidMount() {
         this.refresh();
     }
     async refresh() {
+        if (this.state.query.gameVersion === "any") {
+            delete this.state.query.gameVersion;
+        }
         try {
             const { data, status } = await axios({
                 method: "get",
@@ -87,6 +92,24 @@ export default class ModList extends Component<
                                 onChange={e => this.setState({ query: { ...this.state.query, search: e.target.value } }, this.refresh)}
                             />
                             <i className="fa fa-search" />
+                        </FormGroup>
+                    </div>
+                    <div>
+                        <Label>Game Version</Label>
+                        <FormGroup>
+                            <Input
+                                type="select"
+                                name="gv-select"
+                                value={this.state.query.gameVersion}
+                                onChange={e => this.setState({ query: { ...this.state.query, gameVersion: e.target.value } }, this.refresh)}
+                            >
+                                <option value="any">Any</option>
+                                {gameVersions.map(gv => (
+                                    <option value={gv} key={gv}>
+                                        {gv}
+                                    </option>
+                                ))}
+                            </Input>
                         </FormGroup>
                     </div>
                     <div>
