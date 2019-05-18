@@ -32,7 +32,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
         }
         return foundDependencies;
     }
-    public async getOldVersions(existingMod: IDbMod) {
+    public async getOldVersionsReplacing(existingMod: IDbMod) {
         if (!existingMod || !existingMod._id) {
             return [];
         }
@@ -71,7 +71,9 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                             "version.1": { $eq: existingMod.version.split(".")[1] },
                             "version.2": { $gt: existingMod.version.split(".")[2] }
                         }
-                    ]
+                    ],
+                    status: { $nin: ["inactive", "declined"] },
+                    gameVersion: existingMod.gameVersion
                 }
             },
             { $project: { _id: 1, status: 1 } }

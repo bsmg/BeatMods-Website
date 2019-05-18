@@ -137,7 +137,7 @@ export default class ModService {
             changes.dependencies = (await this.dao.getDependencies(changes.dependencies)).map(item => toId(item._id));
         }
         if (changes.status && changes.status === "approved") {
-            const older = await this.dao.getOldVersions(existing);
+            const older = await this.dao.getOldVersionsReplacing(existing);
             for (const oldMod of older) {
                 if (oldMod.status === "inactive" || oldMod.status === "declined") {
                     // Nothing to do, this status is fine.
