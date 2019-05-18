@@ -10,6 +10,26 @@ import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
 // @ts-ignore
 import { gameVersions } from "../../../config/lists";
+
+function sanitizePathComponent(component: string) {
+    // Shorten the component to 64 characters, which leaves plenty for the rest of the path
+    component = component.slice(0, 64);
+    const replacement = (s: string) => "_".repeat(s.length);
+    // Replace any characters other than letters, numbers, " ", "-", "_", or "." with "_"
+    // Allowing "." is a bit dangerous, but it's always part of the version.
+    // This should be safe on any modern filesystem.
+    return (
+        component
+            .replace(/[^a-zA-Z0-9\-_. ]/g, replacement)
+            // Replace any leading "."s with "_"
+            .replace(/^\.+/, replacement)
+            // Replace any trailing "."s with "_"
+            .replace(/\.+$/, replacement)
+            // Replace any groups of "." with "_"
+            .replace(/\.\.+/g, replacement)
+    );
+}
+
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -214,7 +234,7 @@ export default class ModService {
             for (const file of files) {
                 const type = files.length === 1 ? "universal" : index === 0 ? "steam" : "oculus";
                 const filePath = `/uploads/${_id.toString()}/${type}/`;
-                const fileName = `${name}-${version}.zip`;
+                const fileName = sanitizePathComponent(`${name}-${version}`) + ".zip";
                 const fullPath = path.join(process.cwd(), filePath);
                 const fullFile = path.join(fullPath, fileName);
                 try {
