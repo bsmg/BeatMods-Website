@@ -8,8 +8,6 @@ import path from "path";
 const StreamZip = require("node-stream-zip");
 import AuditLogService from "./AuditLogService";
 import DiscordManager from "../../modules/DiscordManager";
-// @ts-ignore
-import { gameVersions } from "../../../config/lists";
 export default class ModService {
     constructor(protected ctx: IContext) {
         this.dao = new ModDAO(this.ctx.db);
@@ -93,7 +91,7 @@ export default class ModService {
                 }
             }
         }
-        return mods.map(mod => mod as IDbMod).map(mod => (mod.gameVersion ? mod : { ...mod, gameVersion: gameVersions[gameVersions.length - 1] }));
+        return mods.map(mod => mod as IDbMod);
     }
 
     public async update(changes: IDbMod, isInsert = false) {
