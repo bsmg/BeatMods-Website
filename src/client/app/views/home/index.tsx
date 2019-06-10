@@ -13,20 +13,18 @@ export default class Home extends Component<{ history: any; user: any | null }> 
                     <br />
                     You can also <a href="https://discord.gg/beatsabermods">join the official Discord</a>.
                 </p>
-                <p>
-                    Mod installers are available:
-                    <ul>
-                        <li>
-                            <a href="https://github.com/beat-saber-modding-group/BeatSaberModInstaller/releases/latest">Beat Saber Mod Installer</a>
-                        </li>
-                        <li>
-                            <a href="https://bsaber.com/beatdrop/">BeatDrop</a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
-                        </li>
-                    </ul>
-                </p>
+                <span>Mod installers are available:</span>
+                <ul>
+                    <li>
+                        <a href="https://github.com/beat-saber-modding-group/BeatSaberModInstaller/releases/latest">Beat Saber Mod Installer</a>
+                    </li>
+                    <li>
+                        <a href="https://bsaber.com/beatdrop/">BeatDrop</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
+                    </li>
+                </ul>
             </Container>
         );
     }
