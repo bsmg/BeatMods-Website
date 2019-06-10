@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>BeatMods</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+  <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
+</head>
+
+<body>
+<div class="d-flex flex-row align-items-center vh-100">
+  <div class="container">
+    <h3 class="display-4">404</h3>
+    <p class="lead">
+      Oops! There's nothing at <code id="pathname">pathname</code>.
+    </p>
+    <p>
+      If you think something should be here, you can <a href="https://github.com/beat-saber-modding-group/BeatMods-Website/issues/new" target="_blank">open an issue</a> on GitHub.
+    </p>
+    <a href="/">Go back to homepage</a>
+  </div>
+</div>
+<script type="text/javascript">
+  document.getElementById("pathname").innerText = window.location.pathname
+</script>
+</body>
+</html>
