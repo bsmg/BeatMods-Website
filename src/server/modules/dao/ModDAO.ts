@@ -27,7 +27,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 .trim()
         }));
         const foundDependencies = await await this.collection.find({ $or: _dependencies }).toArray();
-        if (foundDependencies.length < _dependencies.length) {
+        if (foundDependencies.length !== _dependencies.length) {
             throw new ServerError("server.invalid_dependencies", [], 400);
         }
         return foundDependencies;
