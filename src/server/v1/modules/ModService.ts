@@ -152,7 +152,7 @@ export default class ModService {
         }
         changes["updatedDate"] = new Date();
         if (changes.dependencies && typeof changes.dependencies === "string") {
-            changes.dependencies = (await this.dao.getDependencies(changes.dependencies)).map(item => toId(item._id));
+            changes.dependencies = (await this.dao.getDependencies(changes.dependencies, existing.gameVersion)).map(item => toId(item._id));
         }
         if (changes.status && changes.status === "approved") {
             const older = await this.dao.getOldVersions(existing);
@@ -210,7 +210,7 @@ export default class ModService {
             throw new ParameterError("mod.duplicate_upload");
         }
         if (files) {
-            const _dependencies = await this.dao.getDependencies(dependencies);
+            const _dependencies = await this.dao.getDependencies(dependencies, gameVersion);
             const mod: IDbMod = {
                 name,
                 description: description || "",

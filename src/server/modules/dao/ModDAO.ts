@@ -18,7 +18,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
         super("mod", db);
     }
 
-    public async getDependencies(dependencies: string) {
+    public async getDependencies(dependencies: string, gameVersion: string) {
         const d = dependencies.split(",").filter(i => i.length);
         if (!d.length) {
             return [];
@@ -34,27 +34,27 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 .trim()
         }));
         const foundDependencies = await this.collection.find({ $or: _dependencies }).toArray();
-        const deDupedFound = await this.dedupeDependencies(foundDependencies);
+        const deDupedFound = await this.dedupeDependencies(foundDependencies, gameVersion);
         if (deDupedFound.length !== _dependencies.length) {
             throw new ServerError("server.invalid_dependencies", [], 400);
         }
 
-        return foundDependencies;
+        return deDupedFound;
     }
-    public async dedupeDependencies(dependencies: Dependencies) {
-        const clone: Dependencies = JSON.parse(JSON.stringify(dependencies));
+    public async dedupeDependencies(dependencies: Array<IDbMod & { _id: any }>, gameVersion: string) {
+        const map = new Map<string, IDbMod & { _id: any }>();
+        for (const dep of dependencies) {
+            if (dep.gameVersion !== gameVersion) {
+                continue;
+            }
 
-        const map = new Map<string, string>();
-        for (const dep of clone) {
-            const version = map.get(dep.name);
-            if (version === undefined) {
-                map.set(dep.name, dep.version);
-            } else if (semver.gt(dep.version, version)) {
-                map.set(dep.name, dep.version);
+            const current = map.get(dep.name);
+            if (current === undefined || semver.gt(dep.version, current.version)) {
+                map.set(dep.name, dep);
             }
         }
 
-        return [...map.entries()].map(([name, version]) => ({ name, version }));
+        return [...map.entries()].map(([, mod]) => mod);
     }
     public async getOldVersions(existingMod: IDbMod) {
         if (!existingMod || !existingMod._id) {
