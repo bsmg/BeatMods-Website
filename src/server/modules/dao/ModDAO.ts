@@ -1,10 +1,17 @@
 import { Db, FindOneOptions } from "mongodb";
+import semver from "semver";
 import BaseDAO, { IBaseDAO } from "./BaseDAO";
 import { IDbMod } from "../../v1/models";
 import { ServerError } from "../../../types/error";
 import { toId } from "../../modules/Utils";
 
 export interface IDbModDAO extends IBaseDAO<IDbMod> {}
+
+interface Dependency {
+    name: string;
+    version: string;
+}
+type Dependencies = Dependency[];
 
 export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
     constructor(db: Db) {
@@ -16,7 +23,7 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
         if (!d.length) {
             return [];
         }
-        const _dependencies = d.map(dependency => ({
+        const _dependencies: Dependencies = d.map(dependency => ({
             version: dependency
                 .trim()
                 .split("@")[1]
@@ -26,11 +33,28 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 .split("@")[0]
                 .trim()
         }));
-        const foundDependencies = await await this.collection.find({ $or: _dependencies }).toArray();
-        if (foundDependencies.length !== _dependencies.length) {
+        const foundDependencies = await this.collection.find({ $or: _dependencies }).toArray();
+        const deDupedFound = await this.dedupeDependencies(foundDependencies);
+        if (deDupedFound.length !== _dependencies.length) {
             throw new ServerError("server.invalid_dependencies", [], 400);
         }
+
         return foundDependencies;
+    }
+    public async dedupeDependencies(dependencies: Dependencies) {
+        const clone: Dependencies = JSON.parse(JSON.stringify(dependencies));
+
+        const map = new Map<string, string>();
+        for (const dep of clone) {
+            const version = map.get(dep.name);
+            if (version === undefined) {
+                map.set(dep.name, dep.version);
+            } else if (semver.gt(dep.version, version)) {
+                map.set(dep.name, dep.version);
+            }
+        }
+
+        return [...map.entries()].map(([name, version]) => ({ name, version }));
     }
     public async getOldVersions(existingMod: IDbMod) {
         if (!existingMod || !existingMod._id) {
