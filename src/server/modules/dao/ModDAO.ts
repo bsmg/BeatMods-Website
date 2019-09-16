@@ -1,4 +1,5 @@
 import { Db, FindOneOptions } from "mongodb";
+import semver from "semver";
 import BaseDAO, { IBaseDAO } from "./BaseDAO";
 import { IDbMod } from "../../v1/models";
 import { ServerError } from "../../../types/error";
@@ -6,17 +7,23 @@ import { toId } from "../../modules/Utils";
 
 export interface IDbModDAO extends IBaseDAO<IDbMod> {}
 
+interface Dependency {
+    name: string;
+    version: string;
+}
+type Dependencies = Dependency[];
+
 export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
     constructor(db: Db) {
         super("mod", db);
     }
 
-    public async getDependencies(dependencies: string) {
+    public async getDependencies(dependencies: string, gameVersion: string) {
         const d = dependencies.split(",").filter(i => i.length);
         if (!d.length) {
             return [];
         }
-        const _dependencies = d.map(dependency => ({
+        const _dependencies: Dependencies = d.map(dependency => ({
             version: dependency
                 .trim()
                 .split("@")[1]
@@ -26,11 +33,28 @@ export default class ModDAO extends BaseDAO<IDbMod> implements IDbModDAO {
                 .split("@")[0]
                 .trim()
         }));
-        const foundDependencies = await await this.collection.find({ $or: _dependencies }).toArray();
-        if (foundDependencies.length !== _dependencies.length) {
+        const foundDependencies = await this.collection.find({ $or: _dependencies }).toArray();
+        const deDupedFound = await this.dedupeDependencies(foundDependencies, gameVersion);
+        if (deDupedFound.length !== _dependencies.length) {
             throw new ServerError("server.invalid_dependencies", [], 400);
         }
-        return foundDependencies;
+
+        return deDupedFound;
+    }
+    public async dedupeDependencies(dependencies: Array<IDbMod & { _id: any }>, gameVersion: string) {
+        const map = new Map<string, IDbMod & { _id: any }>();
+        for (const dep of dependencies) {
+            if (dep.gameVersion !== gameVersion) {
+                continue;
+            }
+
+            const current = map.get(dep.name);
+            if (current === undefined || semver.gt(dep.version, current.version)) {
+                map.set(dep.name, dep);
+            }
+        }
+
+        return [...map.entries()].map(([, mod]) => mod);
     }
     public async getOldVersions(existingMod: IDbMod) {
         if (!existingMod || !existingMod._id) {
