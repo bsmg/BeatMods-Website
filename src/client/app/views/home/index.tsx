@@ -16,13 +16,10 @@ export default class Home extends Component<{ history: any; user: any | null }> 
                 <span>Mod installers are available:</span>
                 <ul>
                     <li>
-                        <a href="https://github.com/beat-saber-modding-group/BeatSaberModInstaller/releases/latest">Beat Saber Mod Installer</a>
+                        <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
                     </li>
                     <li>
                         <a href="https://bsaber.com/beatdrop/">BeatDrop</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/Assistant/ModAssistant/releases/latest">ModAssistant</a>
                     </li>
                 </ul>
             </Container>
