@@ -2,18 +2,12 @@ import axios from "axios";
 import config from "../config";
 export default class DiscordManager {
     public sendWebhook = async (title: string, fields: dynamic[], url: string) => {
-        let color: number;
-        const status = title.split(" ")[1];
-        switch (status) {
-            case "approved":
-                color = 0x42f47d;
-                break;
-            case "declined":
-                color = 0xf44141;
-                break;
-            default:
-                color = 0x34296c;
-        }
+        let color: number = title.includes("approved")
+            ? 0x42f47d
+            : title.includes("declined")
+            ? 0xf44141
+            : 0x34296c;
+
         const body = {
             embeds: [
                 {
